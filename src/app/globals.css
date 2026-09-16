@@ -19,6 +19,13 @@ body {
   background: var(--void);
   color: #f5f5f7;
   font-family: var(--font-arabic), sans-serif;
+  font-synthesis: none;
+}
+
+/* Keep Arabic text upright on Safari and prevent synthetic font styles. */
+html[dir='rtl'] :where(*) {
+  font-style: normal !important;
+  font-synthesis: none !important;
 }
 a {
   text-decoration: none;

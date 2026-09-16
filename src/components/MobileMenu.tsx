@@ -35,13 +35,18 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
           className="fixed inset-0 z-[100] min-h-screen bg-void px-6 py-5 text-white"
         >
           <div className="flex items-center justify-between border-b border-white/10 pb-5">
-            <Image
-              src="/mero-logo-white-gold.svg"
-              alt="Mero"
-              width={105}
-              height={56}
-              className="h-14 w-[105px] object-contain"
-            />
+            <div className="flex items-center gap-3">
+              <Image
+                src="/mero-logo-white-gold.svg"
+                alt="Mero"
+                width={105}
+                height={56}
+                className="h-14 w-[105px] object-contain"
+              />
+              <span className="max-w-[180px] text-sm leading-6 text-gold">
+                {english ? 'Al Thuraya Automotive Services' : 'شركة إطار الثريا لخدمات السيارات'}
+              </span>
+            </div>
             <button
               type="button"
               aria-label={english ? 'Close menu' : 'إغلاق القائمة'}

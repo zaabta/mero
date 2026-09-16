@@ -83,7 +83,7 @@ function Logo({ english = false, large = false }: { english?: boolean; large?: b
         className={large ? 'h-14 w-[150px] object-contain' : 'h-11 w-[82px] object-contain'}
       />
       <span
-        className={`hidden border-white/20 text-[10px] text-gold sm:block ${english ? 'border-l pl-3' : 'border-r pr-3'}`}
+        className={`block max-w-[135px] border-white/20 text-[9px] leading-4 text-gold sm:max-w-none sm:text-[10px] ${english ? 'border-l pl-2 sm:pl-3' : 'border-r pr-2 sm:pr-3'}`}
       >
         {english ? 'Al Thuraya Automotive Services' : 'شركة إطار الثريا لخدمات السيارات'}
       </span>
