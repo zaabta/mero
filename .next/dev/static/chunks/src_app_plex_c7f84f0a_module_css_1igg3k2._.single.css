@@ -1,0 +1,26 @@
+/* [project]/src/app/plex_c7f84f0a.module.css [app-client] (css) */
+@font-face {
+  font-family: plex;
+  src: url("../media/Cairo-s.p.148_29cwdz4qa.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: plex Fallback;
+  src: local(Arial);
+  ascent-override: 137.28%;
+  descent-override: 60.16%;
+  line-gap-override: 0.0%;
+  size-adjust: 94.91%;
+}
+
+.plex_c7f84f0a-module__m0wnIG__className {
+  font-family: plex, plex Fallback;
+}
+
+.plex_c7f84f0a-module__m0wnIG__variable {
+  --font-plex: "plex", "plex Fallback";
+}
+
+/*# sourceMappingURL=src_app_plex_c7f84f0a_module_css_1igg3k2._.single.css.map*/

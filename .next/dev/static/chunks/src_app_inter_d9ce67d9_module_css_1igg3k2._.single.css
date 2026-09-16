@@ -1,0 +1,26 @@
+/* [project]/src/app/inter_d9ce67d9.module.css [app-client] (css) */
+@font-face {
+  font-family: inter;
+  src: url("../media/Cairo-s.p.148_29cwdz4qa.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: inter Fallback;
+  src: local(Arial);
+  ascent-override: 137.28%;
+  descent-override: 60.16%;
+  line-gap-override: 0.0%;
+  size-adjust: 94.91%;
+}
+
+.inter_d9ce67d9-module__MVVz3W__className {
+  font-family: inter, inter Fallback;
+}
+
+.inter_d9ce67d9-module__MVVz3W__variable {
+  --font-inter: "inter", "inter Fallback";
+}
+
+/*# sourceMappingURL=src_app_inter_d9ce67d9_module_css_1igg3k2._.single.css.map*/

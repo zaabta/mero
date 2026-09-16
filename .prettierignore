@@ -1,0 +1,7 @@
+node_modules
+.next
+out
+coverage
+public
+src/app/fonts
+package-lock.json

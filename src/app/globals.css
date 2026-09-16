@@ -1,0 +1,301 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --gold: #d4af37;
+  --amber: #e5b842;
+  --void: #0b0c0e;
+  --carbon: #121417;
+  --raised: #181b20;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--void);
+  color: #f5f5f7;
+  font-family: var(--font-arabic), sans-serif;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.container {
+  width: min(1380px, calc(100% - 6rem));
+  margin: auto;
+}
+.label {
+  font-family: var(--font-plex);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hairline {
+  border-color: rgba(212, 175, 55, 0.18);
+}
+.gold-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.btn {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  border-radius: 4px;
+  font-family: var(--font-plex);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: 0.25s;
+}
+.btn-primary {
+  background: var(--gold);
+  color: var(--void);
+}
+.btn-primary:hover {
+  background: var(--amber);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+}
+.btn-secondary {
+  border: 1px solid var(--gold);
+  background: var(--raised);
+}
+.btn-secondary:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: var(--amber);
+}
+.hero-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 72% 46%, rgba(212, 175, 55, 0.16), transparent 28%),
+    linear-gradient(110deg, #0b0c0e 5%, rgba(11, 12, 14, 0.54) 48%, rgba(11, 12, 14, 0.18)), #181b20;
+}
+.hero-art:before {
+  content: '';
+  position: absolute;
+  width: 54vw;
+  height: 54vw;
+  right: 8%;
+  top: 9%;
+  border-radius: 50%;
+  border: 18px solid #08090a;
+  box-shadow:
+    0 0 0 12px #25282c,
+    0 0 0 28px #090a0c,
+    0 0 70px 10px rgba(212, 175, 55, 0.18);
+  transform: rotate(-18deg);
+}
+.hero-art:after {
+  content: 'MERO';
+  position: absolute;
+  right: 14%;
+  top: 37%;
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 12vw, 12rem);
+  font-weight: 700;
+  letter-spacing: -0.08em;
+  color: rgba(245, 245, 247, 0.05);
+  transform: rotate(-18deg);
+}
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.card {
+  background: var(--carbon);
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  border-radius: 8px;
+}
+.card:hover {
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.08);
+}
+.product-art {
+  height: 210px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(212, 175, 55, 0.22), transparent 35%), #181b20;
+  position: relative;
+  overflow: hidden;
+}
+.tire {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 30px solid #08090a;
+  box-shadow:
+    0 0 0 8px #343537,
+    inset 0 0 0 8px #202226,
+    0 10px 35px rgba(0, 0, 0, 0.7);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-22deg);
+}
+.battery {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 105px;
+  background: linear-gradient(135deg, #30343a, #0d0e10);
+  border: 2px solid #4d4635;
+  border-radius: 5px;
+  box-shadow: 0 12px 25px #000;
+}
+.battery:before {
+  content: 'MERO';
+  position: absolute;
+  inset: 24px 15px auto;
+  color: var(--gold);
+  font: bold 24px var(--font-display);
+  letter-spacing: 0.1em;
+}
+.battery:after {
+  content: '+';
+  position: absolute;
+  right: 12px;
+  top: -16px;
+  color: #e3e2e5;
+  font: bold 18px var(--font-display);
+}
+.can {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  width: 82px;
+  height: 132px;
+  background: linear-gradient(90deg, #b18b25, #e5b842 28%, #87691b 60%, #e9c349);
+  border-radius: 5px;
+  box-shadow: 12px 15px 25px #000;
+  color: #111;
+  display: grid;
+  place-items: center;
+  font: bold 22px var(--font-display);
+  writing-mode: vertical-rl;
+  letter-spacing: 0.12em;
+}
+.filter {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  width: 130px;
+  height: 62px;
+  border-radius: 50%;
+  background: repeating-linear-gradient(90deg, #24272c 0 8px, #54585d 9px 10px);
+  box-shadow: 0 12px 25px #000;
+}
+.nav-blur {
+  background: rgba(11, 12, 14, 0.84);
+  backdrop-filter: blur(16px);
+}
+@media (max-width: 767px) {
+  .container {
+    width: calc(100% - 2.5rem);
+  }
+  .hero-art:before {
+    width: 100vw;
+    height: 100vw;
+    right: -20%;
+    top: 16%;
+    opacity: 0.72;
+  }
+  .hero-art:after {
+    right: 4%;
+    top: 30%;
+    font-size: 6rem;
+  }
+  .product-art {
+    height: 180px;
+  }
+}
+
+.field {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--void);
+  border-radius: 4px;
+  padding: 13px 14px;
+  color: #f5f5f7;
+  font-family: var(--font-arabic);
+}
+
+.field:focus {
+  outline: 0;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.slide-spinner {
+  position: relative;
+  display: grid;
+  height: 32px;
+  width: 32px;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  color: #a1a1aa;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.slide-spinner svg {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  transform: rotate(-90deg);
+}
+
+.slide-spinner b {
+  position: relative;
+  z-index: 1;
+}
+.slide-spinner-track,
+.slide-spinner-progress {
+  fill: none;
+  stroke-width: 3;
+}
+.slide-spinner-track {
+  stroke: rgba(255, 255, 255, 0.14);
+}
+.slide-spinner-progress {
+  stroke: var(--gold);
+  stroke-linecap: round;
+  stroke-dasharray: 94.25;
+  stroke-dashoffset: 94.25;
+}
+.slide-spinner-active {
+  color: var(--gold);
+}
+.slide-spinner-active .slide-spinner-progress {
+  animation: slide-spinner-progress 5s linear 1 forwards;
+}
+
+.carousel-tabs {
+  scrollbar-width: none;
+}
+
+.carousel-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes slide-spinner-progress {
+  from {
+    stroke-dashoffset: 94.25;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

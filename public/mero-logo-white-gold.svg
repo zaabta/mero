@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Mero logo</title>
+  <desc id="desc">White Mero wordmark inside an open-top white frame with a faceted gold star.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF1A8"/>
+      <stop offset="0.28" stop-color="#E3B63F"/>
+      <stop offset="0.62" stop-color="#A86A08"/>
+      <stop offset="1" stop-color="#F3CC58"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M98 178H458 M742 178H1102Q1130 178 1130 206V446Q1130 474 1102 474H98Q70 474 70 446V206Q70 178 98 178Z"/>
+  </g>
+  <g transform="translate(600 156)">
+    <path d="M0-136 32-44 130-42 52 17 80 112 0 57-80 112-52 17-130-42-32-44Z" fill="url(#gold)" stroke="#E7B941" stroke-width="9" stroke-linejoin="round"/>
+    <path d="M0-136V57L32-44Z" fill="#FFE98A" opacity=".7"/>
+    <path d="M0-136-32-44 0 57Z" fill="#C78914" opacity=".55"/>
+    <path d="M-130-42-52 17 0 57-32-44Z" fill="#F1C64F" opacity=".75"/>
+    <path d="M130-42 52 17 0 57 32-44Z" fill="#A86408" opacity=".65"/>
+    <path d="M-80 112-52 17 0 57Z" fill="#B8750B" opacity=".75"/>
+    <path d="M80 112 52 17 0 57Z" fill="#F7D363" opacity=".65"/>
+  </g>
+  <text x="600" y="410" fill="#FFFFFF" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="230" font-weight="700" letter-spacing="-7">Mero</text>
+</svg>
