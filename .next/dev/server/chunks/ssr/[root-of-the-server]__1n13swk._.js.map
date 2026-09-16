@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 20, "column": 0}, "map": {"version":3,"sources":["file:///Users/ali/Desktop/metro/src/lib/i18n.ts"],"sourcesContent":["export type Locale = 'ar' | 'en';\n\nexport const dictionaries = {\n  ar: { products: 'المنتجات', about: 'من نحن', brands: 'العلامات التجارية', contact: 'تواصل معنا' },\n  en: { products: 'Products', about: 'About', brands: 'Brands', contact: 'Contact' },\n} as const;\n\nexport function getDictionary(locale: Locale = 'ar') {\n  return dictionaries[locale];\n}\n"],"names":["dictionaries","ar","products","about","brands","contact","en","getDictionary","locale"],"mappings":";;;;;;AAEO,MAAMA,eAAe;IAC1BC,IAAI;QAAEC,UAAU;QAAYC,OAAO;QAAUC,QAAQ;QAAqBC,SAAS;IAAa;IAChGC,IAAI;QAAEJ,UAAU;QAAYC,OAAO;QAASC,QAAQ;QAAUC,SAAS;IAAU;AACnF;AAEO,SAASE,cAAcC,SAAiB,IAAI;IACjD,OAAOR,YAAY,CAACQ,OAAO;AAC7B"}}]
-}
