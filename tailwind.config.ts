@@ -13,9 +13,8 @@ const config: Config = {
         muted: '#a1a1aa',
       },
       fontFamily: {
-        display: ['var(--font-space)'],
-        body: ['var(--font-inter)'],
-        arabic: ['var(--font-arabic)'],
+        cairo: ['var(--font-cairo)'],
+        arabic: ['var(--font-cairo)'],
       },
     },
   },

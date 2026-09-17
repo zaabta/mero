@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import type { Locale } from '../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
   const [open, setOpen] = useState(false);
@@ -47,14 +48,17 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
                 {english ? 'Al Thuraya Automotive Services' : 'شركة إطار الثريا لخدمات السيارات'}
               </span>
             </div>
-            <button
-              type="button"
-              aria-label={english ? 'Close menu' : 'إغلاق القائمة'}
-              onClick={() => setOpen(false)}
-              className="grid h-11 w-11 place-items-center rounded-lg border border-white/10 text-muted transition hover:border-gold hover:text-gold"
-            >
-              <X size={24} />
-            </button>
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher locale={locale} />
+              <button
+                type="button"
+                aria-label={english ? 'Close menu' : 'إغلاق القائمة'}
+                onClick={() => setOpen(false)}
+                className="grid h-11 w-11 place-items-center rounded-lg border border-white/10 text-muted transition hover:border-gold hover:text-gold"
+              >
+                <X size={24} />
+              </button>
+            </div>
           </div>
           <nav
             className={`mx-auto mt-10 flex max-w-sm flex-col gap-2 ${english ? 'text-left' : 'text-right'}`}

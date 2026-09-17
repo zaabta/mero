@@ -20,7 +20,6 @@ import {
   Wrench,
 } from 'lucide-react';
 import HeroCarousel from '../components/HeroCarousel';
-import IosFontDebug from '../components/IosFontDebug';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import MobileMenu from '../components/MobileMenu';
 import CustomSelect from '../components/CustomSelect';
@@ -107,7 +106,9 @@ function Header({ locale = 'ar' }: { locale?: Locale }) {
           <a href="#contact">{english ? 'Contact' : 'تواصل معنا'}</a>
         </nav>
         <div className="flex items-center gap-2">
-          <LanguageSwitcher locale={locale} />
+          <div className="hidden lg:block">
+            <LanguageSwitcher locale={locale} />
+          </div>
           <MobileMenu locale={locale} />
         </div>
       </div>
@@ -167,8 +168,7 @@ function ProductCard({
 export default function Home({ locale = 'ar' }: { locale?: Locale }) {
   const english = locale === 'en';
   return (
-    <main dir={english ? 'ltr' : 'rtl'} data-ios-font-target>
-      <IosFontDebug />
+    <main dir={english ? 'ltr' : 'rtl'}>
       <Header locale={locale} />
       <HeroCarousel locale={locale} />
       <section
@@ -469,7 +469,7 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                     className="flex min-h-24 flex-col items-center justify-center gap-1 rounded-lg bg-[#292a2c] p-3 text-center"
                   >
                     <standard.icon size={22} className="text-gold" />
-                    <span className="font-display text-sm font-bold">{standard.code}</span>
+                    <span className="font-cairo text-sm font-bold">{standard.code}</span>
                     <span className="text-[10px] text-muted">
                       {english ? standard.en : standard.ar}
                     </span>

@@ -20,32 +20,15 @@ body {
   margin: 0;
   background: var(--void);
   color: #f5f5f7;
-  font-family: var(--font-arabic), sans-serif;
+  font-family: var(--font-cairo), Arial, sans-serif;
 }
 
 html[lang='ar'] body {
+  font-family: var(--font-cairo), Arial, sans-serif;
   font-style: normal;
   font-synthesis: none;
   font-kerning: normal;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Prevent Safari from slanting any site text or synthesizing a font style. */
-html :where(*) {
-  font-style: normal !important;
-  font-synthesis: none !important;
-}
-
-/* Opt-in diagnostic mode: append ?iosFontDebug=1 on a real iPhone Safari URL. */
-.ios-font-debug,
-.ios-font-debug * {
-  font-family: Arial, sans-serif !important;
-  font-style: normal !important;
-  font-synthesis: none !important;
-  transform: none !important;
-  rotate: none !important;
-  writing-mode: horizontal-tb !important;
-  letter-spacing: normal !important;
 }
 
 a {
@@ -57,7 +40,7 @@ a {
   margin: auto;
 }
 .label {
-  font-family: var(--font-plex);
+  font-family: var(--font-cairo);
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -76,7 +59,7 @@ a {
   justify-content: center;
   padding: 0 24px;
   border-radius: 4px;
-  font-family: var(--font-plex);
+  font-family: var(--font-cairo);
   font-weight: 600;
   letter-spacing: 0.04em;
   transition: 0.25s;
@@ -125,7 +108,7 @@ a {
   position: absolute;
   right: 14%;
   top: 37%;
-  font-family: var(--font-display);
+  font-family: var(--font-cairo);
   font-size: clamp(5rem, 12vw, 12rem);
   font-weight: 700;
   letter-spacing: -0.08em;
@@ -185,7 +168,7 @@ a {
   position: absolute;
   inset: 24px 15px auto;
   color: var(--gold);
-  font: bold 24px var(--font-display);
+  font: 700 24px var(--font-cairo);
   letter-spacing: 0.1em;
 }
 .battery:after {
@@ -194,7 +177,7 @@ a {
   right: 12px;
   top: -16px;
   color: #e3e2e5;
-  font: bold 18px var(--font-display);
+  font: 700 18px var(--font-cairo);
 }
 .can {
   position: absolute;
@@ -209,7 +192,7 @@ a {
   color: #111;
   display: grid;
   place-items: center;
-  font: bold 22px var(--font-display);
+  font: 700 22px var(--font-cairo);
   writing-mode: vertical-rl;
   letter-spacing: 0.12em;
 }
@@ -256,7 +239,7 @@ a {
   border-radius: 4px;
   padding: 13px 14px;
   color: #f5f5f7;
-  font-family: var(--font-arabic);
+  font-family: var(--font-cairo);
 }
 
 .field:focus {
