@@ -4,7 +4,6 @@ import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import type { Locale } from '../lib/i18n';
-import LanguageSwitcher from './LanguageSwitcher';
 
 export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
   const [open, setOpen] = useState(false);
@@ -18,7 +17,7 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
   ];
 
   return (
-    <div className="relative lg:hidden">
+    <div className="relative self-center lg:hidden">
       <button
         type="button"
         aria-label={
@@ -26,7 +25,7 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
         }
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="grid h-10 w-10 place-items-center text-muted transition hover:text-gold"
+        className="grid h-10 w-10 place-items-center text-gold transition hover:text-amber"
       >
         {open ? <X size={21} /> : <Menu size={21} />}
       </button>
@@ -44,12 +43,11 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
                 height={56}
                 className="h-14 w-[105px] object-contain"
               />
-              <span className="max-w-[180px] text-sm leading-6 text-gold">
+              <span className="whitespace-nowrap text-xs leading-5 text-gold sm:text-sm">
                 {english ? 'Al Thuraya Automotive Services' : 'شركة إطار الثريا لخدمات السيارات'}
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <LanguageSwitcher locale={locale} />
               <button
                 type="button"
                 aria-label={english ? 'Close menu' : 'إغلاق القائمة'}

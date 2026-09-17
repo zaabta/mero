@@ -7,24 +7,21 @@ export default function LanguageSwitcher({ locale = 'ar' }: { locale?: Locale })
   const language = locale;
   return (
     <div
+      dir="ltr"
       className="flex items-center rounded-md border border-white/10 bg-carbon p-1 text-[10px]"
       role="group"
       aria-label={language === 'en' ? 'Language selection' : 'اختيار اللغة'}
     >
-      <Link
-        href="/ar"
-        aria-current={language === 'ar' ? 'page' : undefined}
-        className={`min-h-7 min-w-8 rounded px-2 py-1.5 text-center transition ${language === 'ar' ? 'bg-gold text-void' : 'text-muted hover:text-white'}`}
-      >
-        AR
-      </Link>
-      <Link
-        href="/en"
-        aria-current={language === 'en' ? 'page' : undefined}
-        className={`min-h-7 min-w-8 rounded px-2 py-1.5 text-center transition ${language === 'en' ? 'bg-gold text-void' : 'text-muted hover:text-white'}`}
-      >
-        EN
-      </Link>
+      {(language === 'en' ? ['en', 'ar'] : ['ar', 'en']).map((item) => (
+        <Link
+          key={item}
+          href={`/${item}`}
+          aria-current={language === item ? 'page' : undefined}
+          className={`min-h-7 min-w-8 rounded px-2 py-1.5 text-center transition ${language === item ? 'bg-gold text-void' : 'text-muted hover:text-white'}`}
+        >
+          {item.toUpperCase()}
+        </Link>
+      ))}
     </div>
   );
 }

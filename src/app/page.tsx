@@ -74,7 +74,7 @@ const products = [
 
 function Logo({ english = false, large = false }: { english?: boolean; large?: boolean }) {
   return (
-    <div className="flex items-center gap-3" dir={english ? 'ltr' : 'rtl'}>
+    <div className="flex items-center gap-3 self-center" dir={english ? 'ltr' : 'rtl'}>
       <Image
         src="/mero-logo-white-gold.svg"
         alt="Mero"
@@ -94,7 +94,7 @@ function Header({ locale = 'ar' }: { locale?: Locale }) {
   const english = locale === 'en';
   return (
     <header className="nav-blur fixed inset-x-0 top-0 z-50 border-b border-white/10">
-      <div className="container flex min-h-[72px] items-center justify-between gap-6">
+      <div className="container flex h-[72px] items-center justify-between gap-2 lg:gap-6">
         <Logo english={english} />
         <nav className="hidden items-center gap-8 text-[12px] text-white/75 lg:flex">
           <a className="text-gold" href="#top">
@@ -106,9 +106,7 @@ function Header({ locale = 'ar' }: { locale?: Locale }) {
           <a href="#contact">{english ? 'Contact' : 'تواصل معنا'}</a>
         </nav>
         <div className="flex items-center gap-2">
-          <div className="hidden lg:block">
-            <LanguageSwitcher locale={locale} />
-          </div>
+          <LanguageSwitcher locale={locale} />
           <MobileMenu locale={locale} />
         </div>
       </div>

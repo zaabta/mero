@@ -120,10 +120,10 @@ export default function HeroCarousel({ locale = 'ar' }: { locale?: Locale }) {
             <current.icon size={14} />
             {copy.eyebrow}
           </div>
-          <h1 className="font-arabic text-3xl font-bold leading-[1.35] text-white sm:text-5xl lg:text-[50px]">
+          <h1 className="font-arabic text-3xl font-bold leading-[1.1] text-white sm:text-5xl sm:leading-[1.2] lg:text-[50px] lg:leading-[1.35]">
             {copy.title}
             <br />
-            <span className="block pt-2 text-gold sm:pt-3">{copy.accent}</span>
+            <span className="block pt-0 text-gold sm:pt-3">{copy.accent}</span>
           </h1>
           <div className="mt-4 flex w-full items-start gap-2 text-[#d0c5af]">
             <current.icon className="mt-1 shrink-0 text-gold" size={22} />
