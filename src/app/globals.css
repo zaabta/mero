@@ -16,6 +16,10 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
+
+[id] {
+  scroll-margin-top: 5.5rem;
+}
 body {
   margin: 0;
   background: var(--void);
@@ -29,6 +33,20 @@ html[lang='ar'] body {
   font-synthesis: none;
   font-kerning: normal;
   -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 a {
@@ -210,6 +228,195 @@ a {
 .nav-blur {
   background: rgba(11, 12, 14, 0.84);
   backdrop-filter: blur(16px);
+}
+
+.mero-map-card {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  height: 300px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 12px;
+  background: var(--carbon);
+}
+
+.mero-map-container {
+  width: 100%;
+  height: 100%;
+}
+
+.mero-map-card .mapboxgl-ctrl-attrib {
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 999px;
+  background: rgba(18, 20, 23, 0.85);
+  color: #a7a8b0;
+}
+
+.mero-map-card .mapboxgl-ctrl-attrib a {
+  color: #d0c5af;
+}
+
+.mero-map-skeleton,
+.mero-map-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  flex-direction: column;
+  padding: 1.5rem;
+  background: #121417;
+  color: #d0c5af;
+  text-align: center;
+}
+
+.mero-map-skeleton svg,
+.mero-map-fallback > svg {
+  color: var(--gold);
+}
+
+.mero-map-fallback strong {
+  color: #f5f5f7;
+}
+
+.mero-map-fallback span {
+  max-width: 34rem;
+  color: #a7a8b0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.mero-map-fallback-actions,
+.mero-map-popup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.mero-map-fallback-actions a,
+.mero-map-popup-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid rgba(212, 175, 55, 0.65);
+  border-radius: 4px;
+  padding: 0.5rem 0.7rem;
+  color: var(--gold);
+  font-size: 0.75rem;
+}
+
+.mero-map-marker {
+  position: relative;
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 0;
+  border: 3px solid #f0c84b;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
+  color: #17130a;
+  cursor: pointer;
+  font-size: 1.45rem;
+  animation: mero-marker-in 0.35s ease-out both;
+}
+
+.mero-map-marker::after {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-top: 12px solid #d4af37;
+  border-right: 9px solid transparent;
+  border-left: 9px solid transparent;
+  content: '';
+  transform: translateX(-50%);
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.35));
+}
+
+.mero-map-marker span {
+  display: block;
+}
+
+.mero-map-popup-container .mapboxgl-popup-content {
+  width: min(420px, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  border-radius: 8px;
+  padding: 0;
+  background: #121417;
+  color: #f5f5f7;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.mero-map-popup-container .mapboxgl-popup-tip {
+  border-top-color: #121417;
+  border-bottom-color: #121417;
+}
+
+.mero-map-popup {
+  width: 100%;
+  min-width: 0;
+  padding: 1.35rem 1rem 1rem;
+  text-align: right;
+}
+
+.mero-map-popup-ltr {
+  text-align: left;
+}
+
+.mero-map-popup strong {
+  display: block;
+  color: var(--gold);
+  font-size: 0.95rem;
+}
+
+.mero-map-popup p {
+  margin: 0.5rem 0 0.8rem;
+  color: #c4c5ca;
+  font-size: 0.75rem;
+  line-height: 1.7;
+}
+
+.mero-map-popup-container .mapboxgl-popup-close-button {
+  top: 0.25rem;
+  right: 0.35rem;
+  color: var(--gold) !important;
+  background: transparent !important;
+  font-size: 1.1rem;
+}
+
+.mero-map-popup-container .mapboxgl-popup-close-button:hover,
+.mero-map-popup-container .mapboxgl-popup-close-button:focus {
+  color: #f0c84b !important;
+  background: rgba(212, 175, 55, 0.12) !important;
+  outline: none;
+}
+
+@keyframes mero-marker-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mero-map-card {
+    height: 420px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mero-map-marker {
+    animation: none;
+  }
 }
 @media (max-width: 767px) {
   .container {

@@ -11,6 +11,7 @@ const slides = [
     imageLtr: '/images/hero-tire-ltr.png',
     imageMobile: '/images/hero-tire-mobile.png',
     alt: 'إطار Mero على سيارة رياضية',
+    altEn: 'Mero tire on a sports car',
     eyebrow: 'هندسة الإطارات الفائقة للظروف الصحراوية',
     title: 'إطارات عالية الجودة',
     accent: 'لرحلة أكثر أماناً',
@@ -24,6 +25,7 @@ const slides = [
     imageLtr: '/images/hero-battery-ltr.png',
     imageMobile: '/images/hero-battery-mobile.png',
     alt: 'بطارية Mero مع سيارة على الطريق',
+    altEn: 'Mero battery with a car on the road',
     eyebrow: 'طاقة تشغيلية مستدامة • قوة تشغيل عالية',
     title: 'بطاريات فائقة الطاقة',
     accent: 'لتحمل أقصى الظروف',
@@ -37,6 +39,7 @@ const slides = [
     imageLtr: '/images/hero-oils-ltr.png',
     imageMobile: '/images/hero-oils-mobile.png',
     alt: 'زيوت وفلاتر Mero',
+    altEn: 'Mero oils and filters',
     eyebrow: 'زيوت تخليقية بالكامل • 5W-30 / 10W-40',
     title: 'زيوت محركات متطورة',
     accent: 'وقطع غيار بأعلى كفاءة',
@@ -82,6 +85,7 @@ export default function HeroCarousel({ locale = 'ar' }: { locale?: Locale }) {
       ][active]
     : current;
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timer = window.setInterval(() => setActive((value) => (value + 1) % slides.length), 5000);
     return () => window.clearInterval(timer);
   }, []);
@@ -101,9 +105,10 @@ export default function HeroCarousel({ locale = 'ar' }: { locale?: Locale }) {
         >
           <Image
             src={english ? slide.imageLtr : slide.image}
-            alt={slide.alt}
+            alt={english ? slide.altEn : slide.alt}
             fill
             priority={index === 0}
+            sizes="100vw"
             className="object-cover object-center"
           />
         </div>
@@ -134,8 +139,9 @@ export default function HeroCarousel({ locale = 'ar' }: { locale?: Locale }) {
           <div className="relative mt-6 h-[300px] overflow-hidden rounded-lg bg-carbon shadow-xl sm:h-[380px] lg:hidden">
             <Image
               src={current.imageMobile}
-              alt={current.alt}
+              alt={english ? current.altEn : current.alt}
               fill
+              sizes="(max-width: 639px) 100vw, 640px"
               className="object-cover object-center"
             />
           </div>

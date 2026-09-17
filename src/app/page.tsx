@@ -1,7 +1,5 @@
 import Image from 'next/image';
 import {
-  ArrowLeft,
-  ArrowRight,
   BatteryCharging,
   BadgeCheck,
   CircleDot,
@@ -14,7 +12,6 @@ import {
   Package,
   Phone,
   Ruler,
-  Send,
   ShieldCheck,
   Zap,
   Wrench,
@@ -22,7 +19,9 @@ import {
 import HeroCarousel from '../components/HeroCarousel';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import MobileMenu from '../components/MobileMenu';
-import CustomSelect from '../components/CustomSelect';
+import ContactForm from '../components/ContactForm';
+import QuoteButton from '../components/QuoteButton';
+import ContactMapLoader from '../components/contact/ContactMapLoader';
 import type { Locale } from '../lib/i18n';
 
 const products = [
@@ -133,8 +132,9 @@ function ProductCard({
       <div className="relative h-56 overflow-hidden bg-raised">
         <Image
           src={product.image}
-          alt={product.title}
+          alt={english ? product.titleEn : product.title}
           fill
+          sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
           className="object-cover transition duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-carbon via-transparent to-transparent" />
@@ -154,10 +154,19 @@ function ProductCard({
         </p>
         <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-3 text-xs text-gold">
           <span className="text-[10px] text-gold">{english ? product.tagEn : product.footer}</span>
-          <span className="inline-flex items-center gap-1 font-semibold">
-            {english ? 'Request a quote' : product.detail}
-            {english ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          </span>
+          <QuoteButton
+            english={english}
+            product={
+              product.title === 'الإطارات الفاخرة'
+                ? 'tires'
+                : product.title === 'البطاريات عالية الأداء'
+                  ? 'batteries'
+                  : product.title === 'زيوت المحركات المتطورة'
+                    ? 'oils'
+                    : 'filters'
+            }
+            label={english ? 'Request a quote' : product.detail}
+          />
         </div>
       </div>
     </article>
@@ -165,8 +174,27 @@ function ProductCard({
 }
 export default function Home({ locale = 'ar' }: { locale?: Locale }) {
   const english = locale === 'en';
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'AutoPartsStore',
+    name: 'Mero | Al Thuraya Automotive Services',
+    url: `https://mero-ten-mocha.vercel.app/${locale}`,
+    telephone: '+966112204999',
+    email: 'Thrya.tire@gmail.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Prince Fahd bin Ibrahim Al Saud Street, Al Malaz',
+      addressLocality: 'Riyadh',
+      postalCode: '12644',
+      addressCountry: 'SA',
+    },
+  };
   return (
     <main dir={english ? 'ltr' : 'rtl'}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <Header locale={locale} />
       <HeroCarousel locale={locale} />
       <section
@@ -478,9 +506,9 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
           </div>
         </div>
       </section>
-      <section id="contact" className="w-full bg-void py-16 lg:py-20">
+      <section id="contact" dir={english ? 'ltr' : 'rtl'} className="w-full bg-void py-16 lg:py-20">
         <div className="container grid gap-10 lg:grid-cols-12 lg:gap-16">
-          <div className="flex flex-col gap-8 lg:col-span-5">
+          <div className="flex min-w-0 flex-col gap-8 lg:col-span-5">
             <div className="flex flex-col gap-3">
               <span className="label text-gold">
                 {english ? 'CONTACT & SUPPLY CENTER' : 'مركز التواصل والتوريد'}
@@ -500,13 +528,15 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gold/10 text-gold">
                   <Phone size={22} />
                 </div>
-                <div className="flex flex-col gap-1 text-sm">
+                <div
+                  className={`flex flex-1 flex-col gap-1 text-sm ${english ? 'text-left' : 'text-right'}`}
+                >
                   <span className="font-arabic font-bold">
                     {english ? 'Direct phone and support' : 'الهاتف المباشر والدعم'}
                   </span>
-                  <span dir={english ? 'ltr' : 'rtl'} className="font-semibold text-gold">
+                  <a href="tel:0112204999" dir="ltr" className="font-semibold text-gold">
                     011 220 4999
-                  </span>
+                  </a>
                 </div>
               </div>
 
@@ -514,13 +544,15 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gold/10 text-gold">
                   <Mail size={22} />
                 </div>
-                <div className="flex flex-col gap-1 text-sm">
+                <div
+                  className={`flex flex-1 flex-col gap-1 text-sm ${english ? 'text-left' : 'text-right'}`}
+                >
                   <span className="font-arabic font-bold">
                     {english ? 'Business email' : 'البريد الإلكتروني التجاري'}
                   </span>
-                  <span dir={english ? 'ltr' : 'rtl'} className="text-muted">
+                  <a href="mailto:Thrya.tire@gmail.com" dir="ltr" className="text-muted">
                     Thrya.tire@gmail.com
-                  </span>
+                  </a>
                 </div>
               </div>
 
@@ -528,22 +560,35 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gold/10 text-gold">
                   <Package size={22} />
                 </div>
-                <div className="flex flex-col gap-1 text-sm">
+                <div
+                  className={`flex flex-1 flex-col gap-1 text-sm ${english ? 'text-left' : 'text-right'}`}
+                >
                   <span className="font-arabic font-bold">
                     {english ? 'Main branch' : 'الفرع الرئيسي'}
                   </span>
-                  <span className="text-muted">
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Car+Park+Complex+Al+Malaz+Riyadh+Saudi+Arabia"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-muted"
+                  >
                     {english
                       ? 'Riyadh – Al Malaz District – Car Park Complex'
                       : 'الرياض - حي الملز - مجمع كار بارك'}
-                  </span>
-                  <span className="text-muted">
+                  </a>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Prince+Fahd+bin+Ibrahim+Al+Saud+Street+Riyadh+Saudi+Arabia"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-muted"
+                  >
                     {english
                       ? 'Prince Fahd bin Ibrahim Al Saud Street • Postal Code: 12644'
                       : 'شارع الأمير فهد بن إبراهيم آل سعود • الرمز البريدي: 12644'}
-                  </span>
-                  <span dir={english ? 'ltr' : 'rtl'} className="pt-1 text-xs text-gold">
-                    011 220 4999 • Thrya.tire@gmail.com
+                  </a>
+                  <span dir="ltr" className="pt-1 text-xs text-gold">
+                    <a href="tel:0112204999">011 220 4999</a> •{' '}
+                    <a href="mailto:Thrya.tire@gmail.com">Thrya.tire@gmail.com</a>
                   </span>
                 </div>
               </div>
@@ -560,104 +605,23 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                   ? 'Fill in the details below and a sales representative will contact you shortly.'
                   : 'املأ البيانات أدناه وسيقوم ممثل المبيعات بالتواصل معكم خلال وقت قياسي.'}
               </p>
-              <form className="mt-6 flex flex-col gap-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="flex flex-col gap-2 text-xs text-muted">
-                    {english ? 'Full name' : 'الاسم الكامل'}
-                    <input
-                      className="field"
-                      placeholder={english ? 'Your full name' : 'سعد المنصوري'}
-                      required
-                      type="text"
-                    />
-                  </label>
-                  <label className="flex flex-col gap-2 text-xs text-muted">
-                    {english ? 'Mobile / WhatsApp number' : 'رقم الجوال / واتساب'}
-                    <input
-                      className="field text-left"
-                      dir="ltr"
-                      placeholder="+966 5x xxx xxxx"
-                      required
-                      type="tel"
-                    />
-                  </label>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="flex flex-col gap-2 text-xs text-muted">
-                    {english ? 'Target country' : 'الدولة المستهدفة'}
-                    <CustomSelect
-                      name="country"
-                      defaultValue="sa"
-                      direction={english ? 'ltr' : 'rtl'}
-                      options={[
-                        {
-                          value: 'sa',
-                          label: english ? 'Kingdom of Saudi Arabia' : 'المملكة العربية السعودية',
-                        },
-                      ]}
-                    />
-                  </label>
-                  <label className="flex flex-col gap-2 text-xs text-muted">
-                    {english ? 'Product or area of interest' : 'نوع الاهتمام / المنتج'}
-                    <CustomSelect
-                      name="product"
-                      defaultValue="tires"
-                      direction={english ? 'ltr' : 'rtl'}
-                      options={[
-                        {
-                          value: 'tires',
-                          label: english
-                            ? 'Car tires (various sizes)'
-                            : 'إطارات سيارات (مختلف المقاسات)',
-                        },
-                        {
-                          value: 'batteries',
-                          label: english ? 'Heavy-duty batteries' : 'بطاريات عالية التحمل',
-                        },
-                        {
-                          value: 'oils',
-                          label: english ? 'Engine oils and greases' : 'زيوت المحركات والشحوم',
-                        },
-                        {
-                          value: 'filters',
-                          label: english ? 'Filters and consumables' : 'فلاتر وقطع استهلاكية',
-                        },
-                        {
-                          value: 'wholesale',
-                          label: english
-                            ? 'Wholesale supply / fleet contracts'
-                            : 'طلب توريد جملة / عقود أساطيل',
-                        },
-                      ]}
-                    />
-                  </label>
-                </div>
-                <label className="flex flex-col gap-2 text-xs text-muted">
-                  {english ? 'Message or order details' : 'الرسالة أو تفاصيل الطلب'}
-                  <textarea
-                    className="field min-h-32"
-                    placeholder={
-                      english
-                        ? 'Mention sizes, approximate quantities, or any special requirements...'
-                        : 'اذكر المقاسات المطلوبة، الكميات التقريبية، أو أي متطلبات خاصة...'
-                    }
-                    rows={4}
-                  />
-                </label>
-                <button className="btn btn-primary mt-1 w-full" type="submit">
-                  {english ? 'Send quote request' : 'إرسال طلب التسعير'}
-                  <Send size={16} />
-                </button>
-              </form>
+              <ContactForm english={english} />
             </div>
           </div>
         </div>
+        <div className="container pt-10">
+          <ContactMapLoader locale={locale} />
+        </div>
       </section>
-      <footer className="w-full border-t border-white/10 bg-[#08090a] pt-16 text-white lg:pt-20">
+      <footer
+        dir={english ? 'ltr' : 'rtl'}
+        className="w-full border-t border-white/10 bg-[#08090a] pt-16 text-white lg:pt-20"
+      >
         <div className="container">
-          <div className="grid gap-10 border-b border-white/10 pb-12 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+          <div className="grid grid-cols-1 gap-10 border-b border-white/10 pb-12 lg:grid-cols-12 lg:gap-8">
             <div
-              className="flex flex-col gap-4 lg:col-span-4 items-start text-left"
+              dir={english ? 'ltr' : 'rtl'}
+              className={`flex flex-col items-start gap-4 lg:col-span-4 ${english ? 'text-left' : 'text-right'}`}
             >
               <Logo english={english} large />
               <span className="text-[11px] text-muted">
@@ -689,7 +653,9 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 lg:col-span-2">
+            <div
+              className={`flex flex-col gap-3 lg:col-span-2 ${english ? 'text-left' : 'text-right'}`}
+            >
               <h3 className="font-arabic text-sm font-bold text-gold">
                 {english ? 'Quick links' : 'روابط سريعة'}
               </h3>
@@ -712,7 +678,9 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
               </nav>
             </div>
 
-            <div className="flex flex-col gap-3 lg:col-span-3">
+            <div
+              className={`flex flex-col gap-3 lg:col-span-3 ${english ? 'text-left' : 'text-right'}`}
+            >
               <h3 className="font-arabic text-sm font-bold text-gold">
                 {english ? 'Main branch' : 'الفرع الرئيسي'}
               </h3>
@@ -727,7 +695,9 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="shrink-0 text-gold" size={16} />
-                  <span dir={english ? 'ltr' : 'rtl'}>011 220 4999</span>
+                  <a href="tel:0112204999" dir="ltr">
+                    011 220 4999
+                  </a>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="shrink-0 text-gold">〒</span>
@@ -735,12 +705,16 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="shrink-0 text-gold" size={16} />
-                  <span dir={english ? 'ltr' : 'rtl'}>Thrya.tire@gmail.com</span>
+                  <a href="mailto:Thrya.tire@gmail.com" dir="ltr">
+                    Thrya.tire@gmail.com
+                  </a>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 lg:col-span-3">
+            <div
+              className={`flex flex-col gap-3 lg:col-span-3 ${english ? 'text-left' : 'text-right'}`}
+            >
               <h3 className="font-arabic text-sm font-bold text-gold">
                 {english ? 'Business activity' : 'النشاط التجاري'}
               </h3>
@@ -755,7 +729,9 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="shrink-0 text-gold" size={16} />
-                  <span dir={english ? 'ltr' : 'rtl'}>Thrya.tire@gmail.com</span>
+                  <a href="mailto:Thrya.tire@gmail.com" dir="ltr">
+                    Thrya.tire@gmail.com
+                  </a>
                 </div>
               </div>
             </div>
@@ -771,10 +747,10 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
               </span>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-5">
-              <a className="transition-colors hover:text-gold" href="#contact">
+              <a className="transition-colors hover:text-gold" href={`/${locale}/privacy`}>
                 {english ? 'Privacy policy' : 'سياسة الخصوصية'}
               </a>
-              <a className="transition-colors hover:text-gold" href="#contact">
+              <a className="transition-colors hover:text-gold" href={`/${locale}/terms`}>
                 {english ? 'Terms and conditions' : 'الشروط والأحكام'}
               </a>
               <a className="transition-colors hover:text-gold" href="#certifications">
