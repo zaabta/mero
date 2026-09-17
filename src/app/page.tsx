@@ -20,6 +20,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import HeroCarousel from '../components/HeroCarousel';
+import IosFontDebug from '../components/IosFontDebug';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import MobileMenu from '../components/MobileMenu';
 import CustomSelect from '../components/CustomSelect';
@@ -166,7 +167,8 @@ function ProductCard({
 export default function Home({ locale = 'ar' }: { locale?: Locale }) {
   const english = locale === 'en';
   return (
-    <main dir={english ? 'ltr' : 'rtl'}>
+    <main dir={english ? 'ltr' : 'rtl'} data-ios-font-target>
+      <IosFontDebug />
       <Header locale={locale} />
       <HeroCarousel locale={locale} />
       <section

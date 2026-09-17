@@ -7,10 +7,26 @@ const arabic = localFont({
   src: './fonts/Cairo.ttf',
   variable: '--font-arabic',
   weight: '100 900',
+  style: 'normal',
 });
-const inter = localFont({ src: './fonts/Cairo.ttf', variable: '--font-inter', weight: '100 900' });
-const space = localFont({ src: './fonts/Cairo.ttf', variable: '--font-space', weight: '100 900' });
-const plex = localFont({ src: './fonts/Cairo.ttf', variable: '--font-plex', weight: '100 900' });
+const inter = localFont({
+  src: './fonts/Cairo.ttf',
+  variable: '--font-inter',
+  weight: '100 900',
+  style: 'normal',
+});
+const space = localFont({
+  src: './fonts/Cairo.ttf',
+  variable: '--font-space',
+  weight: '100 900',
+  style: 'normal',
+});
+const plex = localFont({
+  src: './fonts/Cairo.ttf',
+  variable: '--font-plex',
+  weight: '100 900',
+  style: 'normal',
+});
 export async function generateMetadata(): Promise<Metadata> {
   const localeHeader = (await headers()).get('x-locale');
   const locale = localeHeader && isLocale(localeHeader) ? localeHeader : defaultLocale;
@@ -29,7 +45,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const locale = localeHeader && isLocale(localeHeader) ? localeHeader : defaultLocale;
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
-      <body className={`${inter.variable} ${space.variable} ${plex.variable} ${arabic.variable}`}>
+      <body
+        className={`${inter.variable} ${space.variable} ${plex.variable} ${arabic.variable} ${locale === 'ar' ? 'arabic-page' : 'english-page'}`}
+      >
         {children}
       </body>
     </html>
