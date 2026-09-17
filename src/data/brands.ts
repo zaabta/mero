@@ -18,6 +18,17 @@ const brandNames = [
   ['kumho', 'Kumho Tires'],
   ['nexen', 'Nexen Tire'],
   ['roadstone', 'Roadstone'],
+  ['goodyear', 'Goodyear'],
+  ['landspider', 'Landspider'],
+  ['roadboss', 'ROADBOSS'],
+  ['toyo-tires', 'Toyo Tires'],
+  ['cooper', 'Cooper Tires'],
+  ['wideway', 'Wideway Tires'],
+  ['sailun', 'Sailun'],
+  ['sumitomo', 'Sumitomo'],
+  ['marshal', 'Marshal Tire'],
+  ['tesche', 'Tesche'],
+  ['sonar', 'Sonar Tires'],
 ] as const;
 
 export const brands: Brand[] = brandNames.map(([id, name]) => ({

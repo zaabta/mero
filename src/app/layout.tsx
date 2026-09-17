@@ -4,6 +4,8 @@ import { headers } from 'next/headers';
 import { defaultLocale, isLocale } from '../lib/i18n';
 import './globals.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 export const cairo = localFont({
   src: [
     { path: '../assets/fonts/cairo/Cairo-Regular.woff2', weight: '400', style: 'normal' },
@@ -22,19 +24,19 @@ export async function generateMetadata(): Promise<Metadata> {
   const base = new URL('https://mero-ten-mocha.vercel.app');
   return locale === 'en'
     ? {
-        metadataBase: base,
-        title: 'Mero | Premium Automotive Solutions',
-        description:
-          'Premium tires, batteries, oils, filters, and automotive supply solutions in Saudi Arabia.',
-        icons: { icon: '/mero-logo-white-gold.svg', apple: '/mero-logo-white-gold.svg' },
-      }
+      metadataBase: base,
+      title: 'Mero | Premium Automotive Solutions',
+      description:
+        'Premium tires, batteries, oils, filters, and automotive supply solutions in Saudi Arabia.',
+      icons: { icon: '/mero-logo-white-gold.svg', apple: '/mero-logo-white-gold.svg' },
+    }
     : {
-        metadataBase: base,
-        title: 'Mero | حلول السيارات الراقية',
-        description:
-          'إطارات وبطاريات وزيوت وفلاتر وحلول توريد السيارات الراقية في المملكة العربية السعودية.',
-        icons: { icon: '/mero-logo-white-gold.svg', apple: '/mero-logo-white-gold.svg' },
-      };
+      metadataBase: base,
+      title: 'Mero | حلول السيارات الراقية',
+      description:
+        'إطارات وبطاريات وزيوت وفلاتر وحلول توريد السيارات الراقية في المملكة العربية السعودية.',
+      icons: { icon: '/mero-logo-white-gold.svg', apple: '/mero-logo-white-gold.svg' },
+    };
 }
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const localeHeader = (await headers()).get('x-locale');
@@ -46,9 +48,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={cairo.variable}
       suppressHydrationWarning
     >
-      {/* Browser extensions may inject attributes such as cz-shortcut-listen before hydration. */}
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
       <body className={cairo.className} suppressHydrationWarning>
+        <Header locale={locale} />
         {children}
+        <Footer locale={locale} />
       </body>
     </html>
   );

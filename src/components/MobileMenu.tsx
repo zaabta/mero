@@ -21,6 +21,7 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
     { href: '#about', label: english ? 'About' : 'من نحن' },
     { href: '#products', label: english ? 'Products' : 'المنتجات' },
     { href: '#brands', label: english ? 'Brands' : 'العلامات التجارية' },
+    { href: `/${locale}/blog`, label: english ? 'Blog' : 'المدونة' },
     { href: '#contact', label: english ? 'Contact' : 'تواصل معنا' },
   ];
 
