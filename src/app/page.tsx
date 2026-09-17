@@ -74,7 +74,7 @@ const products = [
 
 function Logo({ english = false, large = false }: { english?: boolean; large?: boolean }) {
   return (
-    <div className="flex items-center gap-3 self-center" dir={english ? 'ltr' : 'rtl'}>
+    <div className="flex items-center gap-3" dir={english ? 'ltr' : 'rtl'}>
       <Image
         src="/mero-logo-white-gold.svg"
         alt="Mero"
@@ -656,7 +656,9 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
       <footer className="w-full border-t border-white/10 bg-[#08090a] pt-16 text-white lg:pt-20">
         <div className="container">
           <div className="grid gap-10 border-b border-white/10 pb-12 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-            <div className="flex flex-col gap-4 lg:col-span-4">
+            <div
+              className="flex flex-col gap-4 lg:col-span-4 items-start text-left"
+            >
               <Logo english={english} large />
               <span className="text-[11px] text-muted">
                 {english
@@ -669,7 +671,10 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 </span>
                 <span>{english ? 'CR No.: 7053792292' : 'السجل التجاري: 7053792292'}</span>
               </div>
-              <p className="max-w-md text-sm leading-7 text-muted">
+              <p
+                dir={english ? 'ltr' : 'rtl'}
+                className={`w-full max-w-md text-sm leading-7 text-muted ${english ? 'text-left' : 'text-right'}`}
+              >
                 {english
                   ? 'A trusted reference for tire solutions and premium automotive engineering services across Saudi Arabia.'
                   : 'المرجع الرائد في حلول الإطارات وخدمات هندسة السيارات الفاخرة في المملكة العربية السعودية.'}

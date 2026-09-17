@@ -106,10 +106,6 @@ export default function HeroCarousel({ locale = 'ar' }: { locale?: Locale }) {
             priority={index === 0}
             className="object-cover object-center"
           />
-          <div
-            className={`absolute inset-0 ${english ? 'bg-gradient-to-r' : 'bg-gradient-to-l'} from-void via-void/85 via-45% to-transparent`}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-void via-void/20 to-void/20" />
         </div>
       ))}
       <div className="container relative z-20 flex h-full items-start lg:items-center">
@@ -120,10 +116,14 @@ export default function HeroCarousel({ locale = 'ar' }: { locale?: Locale }) {
             <current.icon size={14} />
             {copy.eyebrow}
           </div>
-          <h1 className="font-arabic text-3xl font-bold leading-[1.1] text-white sm:text-5xl sm:leading-[1.2] lg:text-[50px] lg:leading-[1.35]">
+          <h1
+            className={`font-arabic text-3xl font-bold text-white sm:text-5xl lg:text-[50px] ${english ? 'leading-[1.05] sm:leading-[1.1] lg:leading-[1.15]' : 'leading-[1.1] sm:leading-[1.2] lg:leading-[1.35]'}`}
+          >
             {copy.title}
             <br />
-            <span className="block pt-0 text-gold sm:pt-3">{copy.accent}</span>
+            <span className={`block text-gold ${english ? 'pt-0' : 'pt-0 sm:pt-3'}`}>
+              {copy.accent}
+            </span>
           </h1>
           <div className="mt-4 flex w-full items-start gap-2 text-[#d0c5af]">
             <current.icon className="mt-1 shrink-0 text-gold" size={22} />
