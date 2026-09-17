@@ -281,7 +281,7 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
       <section id="about" className="bg-[#0d0e10] py-8">
         <div className="container">
           <div className="grid overflow-hidden rounded-xl bg-carbon lg:grid-cols-12" dir="ltr">
-            <div className="relative min-h-[300px] lg:col-span-5 lg:min-h-[320px]">
+            <div className="relative min-h-[240px] lg:col-span-5 lg:min-h-[280px]">
               <Image
                 src="/images/engineering-tire.png"
                 alt={english ? 'Mero tire endurance engineering' : 'هندسة تحمل إطارات Mero'}
@@ -298,10 +298,10 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
               />
             </div>
             <div
-              className={`flex flex-col px-0 py-7 lg:col-span-7 lg:px-0 lg:py-12 ${english ? 'text-left' : 'text-right'}`}
+              className={`flex flex-col px-4 py-4 lg:col-span-7 lg:px-8 lg:py-8 ${english ? 'text-left' : 'text-right'}`}
               dir={english ? 'ltr' : 'rtl'}
             >
-              <p className="label mb-3 text-gold">
+              <p className="label mb-3 px-4 text-gold">
                 {english ? 'SUPERIOR DURABILITY • GCC ROADS' : 'هندسة التحمل الفائق • GCC ROADS'}
               </p>
               <h2 className="font-arabic text-3xl font-bold">
