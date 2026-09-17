@@ -57,6 +57,7 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
                 alt="Mero"
                 width={105}
                 height={56}
+                style={{ width: 'auto' }}
                 className="h-14 w-[105px] object-contain"
               />
               <span className="whitespace-nowrap text-xs leading-5 text-gold sm:text-sm">

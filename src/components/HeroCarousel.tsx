@@ -108,7 +108,7 @@ export default function HeroCarousel({ locale = 'ar' }: { locale?: Locale }) {
             alt={english ? slide.altEn : slide.alt}
             fill
             priority={index === 0}
-            sizes="100vw"
+            sizes="(min-width: 1024px) 100vw, 0px"
             className="object-cover object-center"
           />
         </div>

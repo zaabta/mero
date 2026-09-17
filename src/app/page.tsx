@@ -79,6 +79,7 @@ function Logo({ english = false, large = false }: { english?: boolean; large?: b
         alt="Mero"
         width={large ? 150 : 82}
         height={large ? 54 : 44}
+        style={{ width: 'auto' }}
         className={large ? 'h-14 w-[150px] object-contain' : 'h-11 w-[82px] object-contain'}
       />
       <span
@@ -285,12 +286,14 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 src="/images/engineering-tire.png"
                 alt={english ? 'Mero tire endurance engineering' : 'هندسة تحمل إطارات Mero'}
                 fill
+                sizes="(max-width: 1023px) 100vw, 42vw"
                 className="hidden object-cover lg:block"
               />
               <Image
                 src="/images/engineering-tire-mobile.png"
                 alt={english ? 'Mero tire endurance engineering' : 'هندسة تحمل إطارات Mero'}
                 fill
+                sizes="(max-width: 1023px) 100vw, 42vw"
                 className="object-cover lg:hidden"
               />
             </div>
@@ -381,6 +384,7 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
                 src="/images/team.jpeg"
                 alt="فريق Mero"
                 fill
+                sizes="(max-width: 1023px) 100vw, 42vw"
                 className="object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-void/95 via-void/20 to-transparent" />
