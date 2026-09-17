@@ -77,23 +77,7 @@ export default function BlogPage({ locale }: { locale: Locale }) {
   const featured = filteredArticles[0];
 
   return (
-    <main dir={english ? 'ltr' : 'rtl'} className="min-h-screen bg-void text-white">
-      <header className="border-b border-white/10 bg-carbon">
-        <div className="container flex min-h-[72px] items-center justify-between gap-4">
-          <Link href={`/${locale}`} className="text-sm font-semibold text-gold">
-            Mero
-          </Link>
-          <nav className="flex items-center gap-4 text-sm text-muted">
-            <Link href={`/${locale}`} className="hover:text-gold">
-              {english ? 'Home' : 'الرئيسية'}
-            </Link>
-            <Link href={`/${locale}/blog`} className="text-gold">
-              {english ? 'Blog' : 'المدونة'}
-            </Link>
-          </nav>
-        </div>
-      </header>
-
+    <main dir={english ? 'ltr' : 'rtl'} className="min-h-screen bg-void pt-[72px] text-white">
       <section className="container py-16 lg:py-20">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-3xl">

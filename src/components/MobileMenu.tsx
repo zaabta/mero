@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import type { Locale } from '../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
   const [open, setOpen] = useState(false);
@@ -17,12 +18,11 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [open]);
   const links = [
-    { href: '#top', label: english ? 'Home' : 'الرئيسية' },
-    { href: '#about', label: english ? 'About' : 'من نحن' },
-    { href: '#products', label: english ? 'Products' : 'المنتجات' },
-    { href: '#brands', label: english ? 'Brands' : 'العلامات التجارية' },
+    { href: `/${locale}#top`, label: english ? 'Home' : 'الرئيسية' },
+    { href: `/${locale}#about`, label: english ? 'About' : 'من نحن' },
+    { href: `/${locale}#products`, label: english ? 'Products' : 'المنتجات' },
+    { href: `/${locale}#brands`, label: english ? 'Brands' : 'العلامات التجارية' },
     { href: `/${locale}/blog`, label: english ? 'Blog' : 'المدونة' },
-    { href: '#contact', label: english ? 'Contact' : 'تواصل معنا' },
   ];
 
   return (
@@ -90,6 +90,10 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
                 {link.label}
               </a>
             ))}
+            <div className="mt-5 flex items-center justify-between border-t border-white/10 px-5 pt-5">
+              <span className="text-sm text-muted">{english ? 'Language' : 'اللغة'}</span>
+              <LanguageSwitcher locale={locale} />
+            </div>
           </nav>
         </div>
       )}

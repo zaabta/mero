@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { blogs, getBlogBySlug } from '../../../../data/blogs';
@@ -35,16 +34,6 @@ export default async function BlogArticlePage({ params }: Props) {
 
   return (
     <main dir={english ? 'ltr' : 'rtl'} className="min-h-screen bg-void text-white">
-      <header className="border-b border-white/10 bg-carbon">
-        <div className="container flex min-h-[72px] items-center justify-between gap-4">
-          <Link href={`/${locale}`} className="text-sm font-semibold text-gold">
-            Mero
-          </Link>
-          <Link href={`/${locale}/blog`} className="text-sm text-muted hover:text-gold">
-            {english ? 'Back to blog' : 'العودة إلى المدونة'}
-          </Link>
-        </div>
-      </header>
       <article className="container max-w-4xl py-12 lg:py-20">
         <div className="relative mb-8 h-64 overflow-hidden rounded-xl border border-white/10 bg-carbon lg:h-[420px]">
           <Image
