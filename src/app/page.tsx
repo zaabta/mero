@@ -22,6 +22,8 @@ import MobileMenu from '../components/MobileMenu';
 import ContactForm from '../components/ContactForm';
 import QuoteButton from '../components/QuoteButton';
 import ContactMapLoader from '../components/contact/ContactMapLoader';
+import BrandGrid from '../components/BrandGrid';
+import { getDictionary } from '../lib/i18n';
 import type { Locale } from '../lib/i18n';
 
 const products = [
@@ -175,6 +177,7 @@ function ProductCard({
 }
 export default function Home({ locale = 'ar' }: { locale?: Locale }) {
   const english = locale === 'en';
+  const dictionary = getDictionary(locale);
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'AutoPartsStore',
@@ -330,7 +333,18 @@ export default function Home({ locale = 'ar' }: { locale?: Locale }) {
           </div>
         </div>
       </section>
-      <section id="brands" className="py-20">
+      <section id="brands" className="py-16 lg:py-20">
+        <div className="container text-center">
+          <p className="label text-gold">{english ? 'BRANDS' : 'العلامات التجارية'}</p>
+          <h2 className="mt-3 font-arabic text-3xl font-bold">{dictionary.brandsTitle}</h2>
+          <div className="mx-auto mt-3 h-px w-16 bg-gold" />
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted">
+            {dictionary.brandsDescription}
+          </p>
+          <BrandGrid locale={locale} />
+        </div>
+      </section>
+      <section id="why-mero" className="py-20">
         <div className="container text-center">
           <p className="label text-gold">{english ? 'OUR DIFFERENCE' : 'معايير التميز'}</p>
           <h2 className="mt-3 font-arabic text-3xl font-bold">

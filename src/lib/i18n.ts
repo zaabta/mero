@@ -14,6 +14,11 @@ export const dictionaries = {
     contact: 'تواصل معنا',
     home: 'الرئيسية',
     language: 'اللغة',
+    brandsTitle: 'العلامات التجارية',
+    brandsDescription:
+      'نوفر تشكيلة متنوعة من العلامات التجارية لتلبية احتياجات مختلف المركبات والطرق.',
+    viewAllBrands: 'عرض جميع العلامات',
+    showLess: 'عرض أقل',
   },
   en: {
     products: 'Products',
@@ -22,6 +27,11 @@ export const dictionaries = {
     contact: 'Contact',
     home: 'Home',
     language: 'Language',
+    brandsTitle: 'Brands',
+    brandsDescription:
+      'A diverse selection of automotive brands for different vehicles, roads, and driving needs.',
+    viewAllBrands: 'View all brands',
+    showLess: 'Show less',
   },
 } as const;
 
