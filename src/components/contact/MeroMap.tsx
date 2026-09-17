@@ -81,8 +81,33 @@ export default function MeroMap({ locale }: { locale: Locale }) {
             closeButton: true,
             closeOnClick: true,
             offset: 24,
+            maxWidth: 'calc(100vw - 2rem)',
             className: 'mero-map-popup-container',
           }).setDOMContent(popupContent);
+
+          popup.on('open', () => {
+            window.requestAnimationFrame(() => {
+              const popupElement = popup.getElement();
+              const mapElement = mapContainer.current;
+              if (!popupElement || !mapElement || !map) return;
+              const popupRect = popupElement.getBoundingClientRect();
+              const mapRect = mapElement.getBoundingClientRect();
+              const padding = 12;
+              const offsetX =
+                popupRect.left < mapRect.left + padding
+                  ? mapRect.left + padding - popupRect.left
+                  : popupRect.right > mapRect.right - padding
+                    ? mapRect.right - padding - popupRect.right
+                    : 0;
+              const offsetY =
+                popupRect.top < mapRect.top + padding
+                  ? mapRect.top + padding - popupRect.top
+                  : popupRect.bottom > mapRect.bottom - padding
+                    ? mapRect.bottom - padding - popupRect.bottom
+                    : 0;
+              if (offsetX || offsetY) map.panBy([offsetX, offsetY], { duration: 180 });
+            });
+          });
 
           const coordinates: [number, number] = [branch.longitude, branch.latitude];
           const marker = new mapboxgl.Marker({ element: markerElement, anchor: 'bottom' })
