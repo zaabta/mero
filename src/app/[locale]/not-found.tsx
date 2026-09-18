@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { getLocale } from 'next-intl/server';
+import {hasLocale} from 'next-intl';
 import NotFoundPage from '../../components/errors/NotFoundPage';
-import { defaultLocale, isLocale } from '../../lib/i18n';
+import {routing} from '@/i18n/routing';
 
 export const metadata: Metadata = {
   title: 'Page not found | Mero',
@@ -10,6 +11,8 @@ export const metadata: Metadata = {
 
 export default async function LocaleNotFound() {
   const requestedLocale = await getLocale();
-  const locale = isLocale(requestedLocale) ? requestedLocale : defaultLocale;
+  const locale = hasLocale(routing.locales, requestedLocale)
+    ? requestedLocale
+    : routing.defaultLocale;
   return <NotFoundPage locale={locale} />;
 }

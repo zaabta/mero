@@ -2,6 +2,7 @@ import Logo from './MeroLogo';
 import { useLocale } from 'next-intl';  
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { BadgeCheck } from 'lucide-react';
+import {Link} from '@/i18n/navigation';
 
 export default function Footer() {
   const currentLocale = useLocale();
@@ -64,9 +65,9 @@ export default function Footer() {
               <a className="transition-colors hover:text-gold" href="#brands">
                 {english ? 'Partner brands' : 'العلامات التجارية الشريكة'}
               </a>
-              <a className="transition-colors hover:text-gold" href={`/${currentLocale}/blog`}>
+              <Link className="transition-colors hover:text-gold" href="/blog">
                 {english ? 'Technical blog' : 'المدونة الفنية'}
-              </a>
+              </Link>
               <a className="transition-colors hover:text-gold" href="#contact">
                 {english ? 'Service and contact' : 'مراكز الخدمة والصيانة'}
               </a>
@@ -140,15 +141,15 @@ export default function Footer() {
             </span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-5">
-            <a className="transition-colors hover:text-gold" href={`/${currentLocale}/privacy`}>
+            <Link className="transition-colors hover:text-gold" href="/privacy">
               {english ? 'Privacy policy' : 'سياسة الخصوصية'}
-            </a>
-            <a className="transition-colors hover:text-gold" href={`/${currentLocale}/terms`}>
+            </Link>
+            <Link className="transition-colors hover:text-gold" href="/terms">
               {english ? 'Terms and conditions' : 'الشروط والأحكام'}
-            </a>
-            <a className="transition-colors hover:text-gold" href={`/${currentLocale}/certifications`}>
+            </Link>
+            <Link className="transition-colors hover:text-gold" href="/certifications">
               {english ? 'Quality standards' : 'شهادة الجودة والمقاييس'}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

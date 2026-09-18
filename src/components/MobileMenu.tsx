@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import LanguageSwitcher from './LanguageSwitcher';
+import {Link} from '@/i18n/navigation';
 
 
 export default function MobileMenu() {
@@ -21,11 +22,11 @@ export default function MobileMenu() {
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [open]);
   const links = [
-    { href: `/${locale}#top`, label: t('home') },
-    { href: `/${locale}#about`, label: t('about') },
-    { href: `/${locale}#products`, label: t('products') },
-    { href: `/${locale}#brands`, label: t('brands') },
-    { href: `/${locale}/blog`, label: t('blog') },
+    { href: '/#top', label: t('home') },
+    { href: '/#about', label: t('about') },
+    { href: '/#products', label: t('products') },
+    { href: '/#brands', label: t('brands') },
+    { href: '/blog', label: t('blog') },
   ];
 
   return (
@@ -59,8 +60,7 @@ export default function MobileMenu() {
                 alt="Mero"
                 width={105}
                 height={56}
-                style={{ width: 'auto' }}
-                className="h-14 w-[105px] object-contain"
+                className="h-14 w-auto object-contain"
               />
               <span className="whitespace-nowrap text-xs leading-5 text-gold sm:text-sm">
                 {locale === 'en' ? 'Al Thuraya Automotive Services' : 'شركة إطار الثريا لخدمات السيارات'}
@@ -82,14 +82,14 @@ export default function MobileMenu() {
             className={`mx-auto mt-10 flex max-w-sm flex-col gap-2 ${locale === 'en' ? 'text-left' : 'text-right'}`}
           >
             {links.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
                 className="rounded-xl px-5 py-4 text-lg text-white/85 transition hover:bg-gold/10 hover:text-gold"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
             <div className="mt-5 flex items-center justify-between border-t border-white/10 px-5 pt-5">
               <span className="text-sm text-muted">{t('language')}</span>

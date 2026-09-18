@@ -12,8 +12,7 @@ export default function Logo({ large = false }: { large?: boolean }) {
         alt="Mero"
         width={large ? 150 : 82}
         height={large ? 54 : 44}
-        style={{ width: 'auto' }}
-        className={large ? 'h-14 w-[150px] object-contain' : 'h-11 w-[82px] object-contain'}
+        className={large ? 'h-14 w-auto object-contain' : 'h-11 w-auto object-contain'}
       />
       <span
         dir={locale === 'en' ? 'ltr' : 'rtl'}

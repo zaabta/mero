@@ -1,9 +1,12 @@
-import Link from 'next/link';
+'use client'
 import { useLocale } from 'next-intl';
+import {Link, usePathname} from '@/i18n/navigation';
 
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
+  const pathname = usePathname();
+  const items = ['en', 'ar'] as const;
   return (
     <div
       dir="ltr"
@@ -11,13 +14,12 @@ export default function LanguageSwitcher() {
       role="group"
       aria-label={locale === 'en' ? 'Language selection' : 'اختيار اللغة'}
     >
-      {['en', 'ar'].map((item) => {
-        const targetPath = `/${item}`;
-
+      {items.map((item) => {
         return (
           <Link
             key={item}
-            href={targetPath}
+            href={pathname}
+            locale={item}
             aria-current={locale === item ? 'page' : undefined}
             className={`min-h-7 min-w-8 rounded px-2 py-1.5 text-center transition ${locale === item ? 'bg-gold text-void' : 'text-muted hover:text-white'}`}
           >

@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import {Link} from '@/i18n/navigation';
 import { ArrowLeft, ArrowRight, CircleHelp } from 'lucide-react';
-import type { Locale } from '../../lib/i18n';
+import type {Locale} from '@/i18n/routing';
 
 export default function NotFoundPage({ locale }: { locale: Locale }) {
   const english = locale === 'en';
@@ -69,14 +69,14 @@ export default function NotFoundPage({ locale }: { locale: Locale }) {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
-                href={`/${locale}`}
+                href="/"
                 className="btn btn-primary w-full gap-2 px-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void motion-reduce:transition-none sm:w-auto"
               >
                 {english ? 'Back to Home' : 'العودة إلى الرئيسية'}
                 <Arrow aria-hidden="true" size={17} />
               </Link>
               <Link
-                href={`/${locale}#products`}
+                href="/#products"
                 className="btn btn-secondary w-full gap-2 px-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void motion-reduce:transition-none sm:w-auto"
               >
                 {english ? 'Browse Products' : 'تصفح المنتجات'}
@@ -85,7 +85,7 @@ export default function NotFoundPage({ locale }: { locale: Locale }) {
             </div>
 
             <Link
-              href={`/${locale}#contact`}
+              href="/#contact"
               className="mt-7 inline-flex items-center gap-2 text-sm text-muted underline decoration-gold/50 underline-offset-4 transition hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void motion-reduce:transition-none"
             >
               <CircleHelp aria-hidden="true" size={16} className="text-gold" />

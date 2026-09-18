@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
+import {Link} from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
+import {hasLocale} from 'next-intl';
+import {setRequestLocale} from 'next-intl/server';
+import {routing, type Locale} from '@/i18n/routing';
 import { getLocalizedBlogBySlug, localizedBlogs } from '../../../../data/blogs';
-import { isLocale } from '../../../../lib/i18n';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://thurayatires.com';
 const categoryKeys = {
@@ -28,7 +30,7 @@ const categoryLabels = {
 } as const;
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
-function formatBlogDate(date: string, locale: 'ar' | 'en') {
+function formatBlogDate(date: string, locale: Locale) {
   return new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'ar-SA', {
     day: 'numeric',
     month: 'long',
@@ -37,7 +39,7 @@ function formatBlogDate(date: string, locale: 'ar' | 'en') {
 }
 
 export function generateStaticParams() {
-  return ['ar', 'en'].flatMap((locale) =>
+  return routing.locales.flatMap((locale) =>
     localizedBlogs.map((blog) => ({ locale, slug: blog.slug })),
   );
 }
@@ -45,7 +47,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const blog = getLocalizedBlogBySlug(slug);
-  if (!isLocale(rawLocale) || !blog) return {};
+  if (!hasLocale(routing.locales, rawLocale) || !blog) notFound();
   const locale = rawLocale;
   const articleUrl = `${SITE_URL}/${locale}/blog/${blog.slug}`;
   const imageUrl = new URL(blog.image, SITE_URL).toString();
@@ -56,7 +58,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     alternates: {
       canonical: articleUrl,
-      languages: { ar: `${SITE_URL}/ar/blog/${blog.slug}`, en: `${SITE_URL}/en/blog/${blog.slug}` },
+      languages: {
+        ar: `${SITE_URL}/ar/blog/${blog.slug}`,
+        en: `${SITE_URL}/en/blog/${blog.slug}`,
+        'x-default': `${SITE_URL}/ar/blog/${blog.slug}`
+      },
     },
     openGraph: {
       type: 'article',
@@ -77,8 +83,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogArticlePage({ params }: Props) {
   const { locale: rawLocale, slug } = await params;
   const blog = getLocalizedBlogBySlug(slug);
-  if (!isLocale(rawLocale) || !blog) notFound();
+  if (!hasLocale(routing.locales, rawLocale) || !blog) notFound();
   const locale = rawLocale;
+  setRequestLocale(locale);
   const english = locale === 'en';
   const articleUrl = `${SITE_URL}/${locale}/blog/${blog.slug}`;
   const imageUrl = new URL(blog.image, SITE_URL).toString();
@@ -175,7 +182,7 @@ export default async function BlogArticlePage({ params }: Props) {
             return <p key={index}>{line}</p>;
           })}
         </div>
-        <Link href={`/${locale}/blog`} className="btn btn-secondary mt-10 inline-flex">
+        <Link href="/blog" className="btn btn-secondary mt-10 inline-flex">
           {english ? 'Back to blog' : 'العودة إلى المدونة'}
         </Link>
       </article>

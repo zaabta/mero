@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import {Link} from '@/i18n/navigation';
 import CustomSelect from './CustomSelect';
 import { useLocale } from 'next-intl';
 
@@ -140,7 +140,7 @@ export default function ContactForm() {
           {english
             ? 'I agree to the processing of my information for the purpose of responding to my request in accordance with the Privacy Policy.'
             : 'أوافق على معالجة بياناتي لغرض التواصل والرد على طلبي وفق سياسة الخصوصية.'}{' '}
-          <Link className="text-gold underline" href={english ? '/en/privacy' : '/ar/privacy'}>
+          <Link className="text-gold underline" href="/privacy">
             {english ? 'Read the Privacy Policy' : 'اقرأ سياسة الخصوصية'}
           </Link>
         </span>

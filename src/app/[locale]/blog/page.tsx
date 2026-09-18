@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import {hasLocale} from 'next-intl';
+import {setRequestLocale} from 'next-intl/server';
 import BlogPage from '../../../components/BlogPage';
 import { localizedBlogs } from '../../../data/blogs';
-import { isLocale, type Locale } from '../../../lib/i18n';
+import {routing, type Locale} from '@/i18n/routing';
 
 const categoryValues = ['all', 'tires', 'batteries', 'oils', 'standards'] as const;
 type Category = (typeof categoryValues)[number];
@@ -53,7 +55,7 @@ function localizedCategory(locale: Locale, category: string) {
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
   const { q, category } = await searchParams;
-  if (!isLocale(locale)) return {};
+  if (!hasLocale(routing.locales, locale)) notFound();
   const filtered = Boolean(normalizeQuery(q) || normalizeCategory(category) !== 'all');
   return {
     title:
@@ -73,9 +75,10 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 export default async function LocaleBlogPage({ params, searchParams }: Props) {
   const { locale: rawLocale } = await params;
   const { q: rawQuery, category: rawCategory } = await searchParams;
-  if (!isLocale(rawLocale)) notFound();
+  if (!hasLocale(routing.locales, rawLocale)) notFound();
 
   const locale = rawLocale;
+  setRequestLocale(locale);
   const query = normalizeQuery(rawQuery);
   const selectedCategory = normalizeCategory(rawCategory);
   const searchText = query.toLocaleLowerCase(locale === 'en' ? 'en-US' : 'ar');

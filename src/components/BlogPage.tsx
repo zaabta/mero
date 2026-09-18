@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import {Link} from '@/i18n/navigation';
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,7 +13,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { LocalizedBlogPost } from '../data/blogs';
-import type { Locale } from '../lib/i18n';
+import type {Locale} from '@/i18n/routing';
 import { useLocale } from 'next-intl';
 
 type CategoryKey = 'all' | 'tires' | 'batteries' | 'oils' | 'standards';
@@ -63,7 +63,7 @@ function blogHref(locale: Locale, category: CategoryKey, query: string) {
   if (category !== 'all') params.set('category', category);
   if (query) params.set('q', query);
   const search = params.toString();
-  return `/${locale}/blog${search ? `?${search}` : ''}`;
+  return `/blog${search ? `?${search}` : ''}`;
 }
 
 type Props = {
@@ -147,7 +147,7 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
           })}
           {(query || selectedCategory !== 'all') && (
             <Link
-              href={`/${locale}/blog`}
+              href="/blog"
               className="inline-flex shrink-0 items-center px-3 py-2 text-xs text-muted underline underline-offset-4 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
             >
               {english ? 'Clear filters' : 'مسح التصفية'}
@@ -175,7 +175,7 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
                   {english ? 'FEATURED ARTICLE' : 'مقال مميز'}
                 </span>
                 <h2 className="mt-4 font-arabic text-2xl font-bold leading-tight lg:text-4xl">
-                  <Link href={`/${locale}/blog/${featured.slug}`} className="hover:text-gold">
+                  <Link href={`/blog/${featured.slug}`} className="hover:text-gold">
                     {featured.title[locale]}
                   </Link>
                 </h2>
@@ -202,7 +202,7 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
           {articles.slice(1).map((article) => (
             <Link
               key={article.slug}
-              href={`/${locale}/blog/${article.slug}`}
+              href={`/blog/${article.slug}`}
               className="group overflow-hidden rounded-xl border border-white/10 bg-carbon transition hover:-translate-y-0.5 hover:border-gold/50 motion-reduce:transition-none"
             >
               <div className="relative h-52 overflow-hidden bg-raised">
@@ -236,7 +236,7 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
           ))}
         </div>
         <Link
-          href={`/${locale}#contact`}
+          href="/#contact"
           className="btn btn-primary mx-auto mt-10 flex w-fit gap-2 px-6 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void"
         >
           {english ? 'Talk to our experts' : 'تواصل مع خبرائنا'} <Arrow size={16} />

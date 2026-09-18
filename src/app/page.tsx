@@ -20,8 +20,8 @@ import ContactForm from '../components/ContactForm';
 import QuoteButton from '../components/QuoteButton';
 import ContactMapLoader from '../components/contact/ContactMapLoader';
 import BrandGrid from '../components/BrandGrid';
-import { getTranslations } from 'next-intl/server';
-import { useLocale } from 'next-intl';
+import {getTranslations} from 'next-intl/server';
+import {routing, type Locale} from '@/i18n/routing';
 
 const products = [
   {
@@ -130,8 +130,7 @@ function ProductCard({
     </article>
   );
 }
-export default async function Home() {
-  const locale = useLocale();
+export default async function Home({locale = routing.defaultLocale}: {locale?: Locale}) {
   const english = locale === 'en';
   const t = await getTranslations('home');
   const structuredData = {
