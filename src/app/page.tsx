@@ -24,6 +24,7 @@ import {getTranslations} from 'next-intl/server';
 import {permanentRedirect} from 'next/navigation';
 import type {Locale} from '@/i18n/routing';
 import {SITE_URL} from '@/lib/site';
+import {BUSINESS} from '@/lib/business';
 
 const products = [
   {
@@ -135,41 +136,66 @@ function ProductCard({
 export async function Home({locale}: {locale: Locale}) {
   const english = locale === 'en';
   const t = await getTranslations('home');
-  const logoUrl = `${SITE_URL}/mero-logo-white-gold.svg`;
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'Organization',
         '@id': `${SITE_URL}/#organization`,
-        name: 'Al Thuraya Automotive Services',
+        name: english ? BUSINESS.legalNameEn : BUSINESS.legalNameAr,
+        alternateName: BUSINESS.brandName,
         url: SITE_URL,
-        logo: logoUrl,
+        logo: BUSINESS.logoUrl,
+        email: BUSINESS.email,
+        telephone: BUSINESS.phone,
       },
       {
         '@type': 'WebSite',
         '@id': `${SITE_URL}/#website`,
-        name: 'Mero',
+        name: BUSINESS.brandName,
         url: SITE_URL,
         publisher: {'@id': `${SITE_URL}/#organization`},
+        inLanguage: BUSINESS.languages,
       },
       {
         '@type': 'AutoPartsStore',
-        '@id': `${SITE_URL}/#business`,
-        name: 'Mero | Al Thuraya Automotive Services',
+        '@id': `${SITE_URL}/#localbusiness`,
+        name: `${BUSINESS.brandName} | ${english ? BUSINESS.legalNameEn : BUSINESS.legalNameAr}`,
         url: `${SITE_URL}/${locale}`,
         image: `${SITE_URL}/images/og/${english ? 'mero-og-image-en.jpg' : 'mero-og-image.jpg'}`,
-        logo: logoUrl,
+        logo: BUSINESS.logoUrl,
         isPartOf: {'@id': `${SITE_URL}/#website`},
-        telephone: '+966112204999',
-        email: 'Thrya.tire@gmail.com',
+        telephone: BUSINESS.phone,
+        email: BUSINESS.email,
         address: {
           '@type': 'PostalAddress',
-          streetAddress: 'Prince Fahd bin Ibrahim Al Saud Street, Al Malaz',
-          addressLocality: 'Riyadh',
-          postalCode: '12644',
-          addressCountry: 'SA',
+          streetAddress: english ? BUSINESS.streetAddressEn : BUSINESS.streetAddressAr,
+          addressLocality: english ? BUSINESS.cityEn : BUSINESS.cityAr,
+          postalCode: BUSINESS.postalCode,
+          addressCountry: BUSINESS.countryCode,
         },
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: BUSINESS.latitude,
+          longitude: BUSINESS.longitude,
+        },
+        hasMap: BUSINESS.mapUrl,
+        areaServed: BUSINESS.serviceArea,
+        availableLanguage: BUSINESS.languages,
+        contactPoint: {
+          '@type': 'ContactPoint',
+          telephone: BUSINESS.whatsapp,
+          contactType: 'customer service',
+          availableLanguage: BUSINESS.languages,
+        },
+      },
+      {
+        '@type': 'WebPage',
+        '@id': `${SITE_URL}/${locale}#webpage`,
+        url: `${SITE_URL}/${locale}`,
+        isPartOf: {'@id': `${SITE_URL}/#website`},
+        about: {'@id': `${SITE_URL}/#localbusiness`},
+        inLanguage: locale,
       },
     ],
   };

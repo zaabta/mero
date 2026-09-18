@@ -6,6 +6,7 @@ import {hasLocale} from 'next-intl';
 import {setRequestLocale} from 'next-intl/server';
 import {routing, type Locale} from '@/i18n/routing';
 import {SITE_URL} from '@/lib/site';
+import {BUSINESS} from '@/lib/business';
 import { getLocalizedBlogBySlug, localizedBlogs } from '../../../../data/blogs';
 const categoryKeys = {
   'تقنية الإطارات': 'tires',
@@ -95,23 +96,18 @@ export default async function BlogArticlePage({ params }: Props) {
   const category = categoryLabels[locale][categoryKeys[blog.type]];
   const articleJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
+    '@id': `${articleUrl}#blogposting`,
     headline: title,
     description,
     image: [imageUrl],
     datePublished: blog.createdAt,
-    dateModified: blog.updatedAt ?? blog.createdAt,
+    ...(blog.updatedAt ? {dateModified: blog.updatedAt} : {}),
     inLanguage: locale,
     articleSection: category,
-    '@id': articleUrl,
-    mainEntityOfPage: articleUrl,
-    author: { '@type': 'Organization', name: 'Mero', url: SITE_URL },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Mero',
-      url: SITE_URL,
-      logo: { '@type': 'ImageObject', url: `${SITE_URL}/mero-logo-white-gold.svg` },
-    },
+    mainEntityOfPage: {'@id': articleUrl},
+    author: {'@id': `${SITE_URL}/#organization`},
+    publisher: {'@id': `${SITE_URL}/#organization`},
   };
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -132,6 +128,13 @@ export default async function BlogArticlePage({ params }: Props) {
       { '@type': 'ListItem', position: 3, name: title, item: articleUrl },
     ],
   };
+  const organizationJsonLd = {
+    '@type': 'Organization',
+    '@id': `${SITE_URL}/#organization`,
+    name: english ? BUSINESS.legalNameEn : BUSINESS.legalNameAr,
+    url: SITE_URL,
+    logo: BUSINESS.logoUrl,
+  };
   const paragraphs = blog.content[locale].split('\n');
 
   return (
@@ -139,6 +142,21 @@ export default async function BlogArticlePage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@graph': [organizationJsonLd, {
+              '@type': 'WebSite',
+              '@id': `${SITE_URL}/#website`,
+              name: BUSINESS.brandName,
+              url: SITE_URL,
+              publisher: {'@id': `${SITE_URL}/#organization`},
+            }],
+          }).replace(/</g, '\\u003c'),
+        }}
       />
       <script
         type="application/ld+json"

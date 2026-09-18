@@ -6,6 +6,7 @@ import BlogPage from '../../../components/BlogPage';
 import { localizedBlogs } from '../../../data/blogs';
 import {routing, type Locale} from '@/i18n/routing';
 import {SITE_URL} from '@/lib/site';
+import {BUSINESS} from '@/lib/business';
 
 const categoryValues = ['all', 'tires', 'batteries', 'oils', 'standards'] as const;
 type Category = (typeof categoryValues)[number];
@@ -102,13 +103,59 @@ export default async function LocaleBlogPage({ params, searchParams }: Props) {
       .toLocaleLowerCase(locale === 'en' ? 'en-US' : 'ar');
     return categoryMatch && (!searchText || searchable.includes(searchText));
   });
+  const blogUrl = `${SITE_URL}/${locale}/blog`;
+  const blogJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Blog',
+        '@id': `${blogUrl}#blog`,
+        url: blogUrl,
+        name: locale === 'en' ? 'Mero technical blog' : 'مدونة ميرو الفنية',
+        description:
+          locale === 'en'
+            ? 'Technical guidance about tires, batteries, engine oils and vehicle maintenance.'
+            : 'إرشادات فنية حول الإطارات والبطاريات وزيوت المحركات وصيانة السيارات.',
+        publisher: {'@id': `${SITE_URL}/#organization`},
+        isPartOf: {'@id': `${SITE_URL}/#website`},
+        inLanguage: locale,
+      },
+      {
+        '@type': 'CollectionPage',
+        '@id': `${blogUrl}#webpage`,
+        url: blogUrl,
+        isPartOf: {'@id': `${SITE_URL}/#website`},
+        about: {'@id': `${blogUrl}#blog`},
+        inLanguage: locale,
+      },
+      {
+        '@type': 'Organization',
+        '@id': `${SITE_URL}/#organization`,
+        name: locale === 'en' ? BUSINESS.legalNameEn : BUSINESS.legalNameAr,
+        url: SITE_URL,
+        logo: BUSINESS.logoUrl,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${SITE_URL}/#website`,
+        name: BUSINESS.brandName,
+        url: SITE_URL,
+      },
+    ],
+  };
 
   return (
-    <BlogPage
-      locale={locale}
-      articles={articles}
-      query={query}
-      selectedCategory={selectedCategory}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(blogJsonLd).replace(/</g, '\\u003c')}}
+      />
+      <BlogPage
+        locale={locale}
+        articles={articles}
+        query={query}
+        selectedCategory={selectedCategory}
+      />
+    </>
   );
 }
