@@ -14,8 +14,11 @@ export default function Header({ locale = 'ar' }: { locale?: Locale }) {
   return (
     <header className="nav-blur fixed inset-x-0 top-0 z-50 border-b border-white/10">
       <div className="container flex h-[72px] items-center justify-between gap-2 lg:gap-6">
-        <Logo english={english} />
-        <nav className="hidden items-center gap-8 text-[12px] text-white/75 lg:flex">
+        <Logo locale={currentLocale} />
+        <nav
+          dir={english ? 'ltr' : 'rtl'}
+          className="hidden items-center gap-8 text-[12px] text-white/75 lg:flex"
+        >
           <a className="text-gold" href={`/${currentLocale}#top`}>
             {english ? 'Home' : 'الرئيسية'}
           </a>

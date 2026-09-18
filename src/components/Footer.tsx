@@ -1,14 +1,20 @@
+'use client';
 import Logo from './MeroLogo';
+import type { Locale } from '../lib/i18n';
+import { isLocale } from '../lib/i18n';
+import { usePathname } from 'next/navigation';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { BadgeCheck } from 'lucide-react';
 
 export default function Footer({
-  english = false,
   locale = 'ar',
 }: {
-  english?: boolean;
-  locale?: string;
+  locale?: Locale;
 }) {
+  const pathname = usePathname();
+  const pathLocale = pathname?.split('/')[1];
+  const currentLocale = pathLocale && isLocale(pathLocale) ? pathLocale : locale;
+  const english = currentLocale === 'en';
   return (
     <footer
       dir={english ? 'ltr' : 'rtl'}
@@ -20,7 +26,7 @@ export default function Footer({
             dir={english ? 'ltr' : 'rtl'}
             className={`flex flex-col items-start gap-4 lg:col-span-4 ${english ? 'text-left' : 'text-right'}`}
           >
-            <Logo english={english} large />
+            <Logo locale={currentLocale} large />
             <span className="text-[11px] text-muted">
               {english
                 ? 'AL THURAYA TIRES AUTO SERVICES CO. • Wholesale & Retail Tires Trading'
@@ -67,7 +73,7 @@ export default function Footer({
               <a className="transition-colors hover:text-gold" href="#brands">
                 {english ? 'Partner brands' : 'العلامات التجارية الشريكة'}
               </a>
-              <a className="transition-colors hover:text-gold" href={`/${locale}/blog`}>
+              <a className="transition-colors hover:text-gold" href={`/${currentLocale}/blog`}>
                 {english ? 'Technical blog' : 'المدونة الفنية'}
               </a>
               <a className="transition-colors hover:text-gold" href="#contact">
