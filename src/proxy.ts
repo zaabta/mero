@@ -5,7 +5,17 @@ import {routing} from '@/i18n/routing';
 const handleI18nRouting = createMiddleware(routing);
 
 export default function proxy(request: NextRequest) {
-  if (request.nextUrl.pathname === '/') {
+  const pathname = request.nextUrl.pathname;
+  const localizedStudioMatch = pathname.match(/^\/(ar|en)\/studio(?=\/|$)/);
+  const isStudioPath = pathname === '/studio' || pathname.startsWith('/studio/');
+
+  if (localizedStudioMatch) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(/^\/(ar|en)(?=\/studio)/, '');
+    return NextResponse.rewrite(url);
+  }
+
+  if (pathname === '/' || isStudioPath) {
     return NextResponse.next();
   }
 
