@@ -1,13 +1,13 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { brands } from '../data/brands';
-import { getDictionary, type Locale } from '../lib/i18n';
 
-export default function BrandGrid({ locale }: { locale: Locale }) {
+export default function BrandGrid() {
   const [expanded, setExpanded] = useState(false);
-  const dictionary = getDictionary(locale);
+  const t = useTranslations('home');
   return (
     <>
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
@@ -33,7 +33,7 @@ export default function BrandGrid({ locale }: { locale: Locale }) {
         onClick={() => setExpanded((value) => !value)}
         className="btn btn-secondary mt-6 min-h-11 px-6 text-sm sm:hidden"
       >
-        {expanded ? dictionary.showLess : dictionary.viewAllBrands}
+        {expanded ? t('showLess') : t('viewAllBrands')}
       </button>
     </>
   );

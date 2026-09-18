@@ -3,12 +3,15 @@
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import type { Locale } from '../lib/i18n';
+import { useLocale, useTranslations } from 'next-intl';
 import LanguageSwitcher from './LanguageSwitcher';
 
-export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
+
+export default function MobileMenu() {
   const [open, setOpen] = useState(false);
-  const english = locale === 'en';
+  const locale = useLocale();
+  const english = locale === 'en'; 
+  const t = useTranslations('header');
   useEffect(() => {
     if (!open) return;
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -18,20 +21,18 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [open]);
   const links = [
-    { href: `/${locale}#top`, label: english ? 'Home' : 'الرئيسية' },
-    { href: `/${locale}#about`, label: english ? 'About' : 'من نحن' },
-    { href: `/${locale}#products`, label: english ? 'Products' : 'المنتجات' },
-    { href: `/${locale}#brands`, label: english ? 'Brands' : 'العلامات التجارية' },
-    { href: `/${locale}/blog`, label: english ? 'Blog' : 'المدونة' },
+    { href: `/${locale}#top`, label: t('home') },
+    { href: `/${locale}#about`, label: t('about') },
+    { href: `/${locale}#products`, label: t('products') },
+    { href: `/${locale}#brands`, label: t('brands') },
+    { href: `/${locale}/blog`, label: t('blog') },
   ];
 
   return (
     <div className="relative self-center lg:hidden">
       <button
         type="button"
-        aria-label={
-          open ? (english ? 'Close menu' : 'إغلاق القائمة') : english ? 'Open menu' : 'فتح القائمة'
-        }
+        aria-label={open ? t('closeMenu') : t('openMenu')}
         aria-expanded={open}
         aria-controls="mobile-navigation"
         onClick={() => setOpen((value) => !value)}
@@ -42,7 +43,7 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
       {open && (
         <div
           id="mobile-navigation"
-          dir={english ? 'ltr' : 'rtl'}
+          dir={locale === 'en' ? 'ltr' : 'rtl'}
           role="dialog"
           aria-modal="true"
           onClick={() => setOpen(false)}
@@ -62,13 +63,13 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
                 className="h-14 w-[105px] object-contain"
               />
               <span className="whitespace-nowrap text-xs leading-5 text-gold sm:text-sm">
-                {english ? 'Al Thuraya Automotive Services' : 'شركة إطار الثريا لخدمات السيارات'}
+                {locale === 'en' ? 'Al Thuraya Automotive Services' : 'شركة إطار الثريا لخدمات السيارات'}
               </span>
             </div>
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                aria-label={english ? 'Close menu' : 'إغلاق القائمة'}
+                aria-label={t('closeMenu')}
                 onClick={() => setOpen(false)}
                 className="grid h-11 w-11 place-items-center rounded-lg border border-white/10 text-muted transition hover:border-gold hover:text-gold"
               >
@@ -78,7 +79,7 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
           </div>
           <nav
             onClick={(event) => event.stopPropagation()}
-            className={`mx-auto mt-10 flex max-w-sm flex-col gap-2 ${english ? 'text-left' : 'text-right'}`}
+            className={`mx-auto mt-10 flex max-w-sm flex-col gap-2 ${locale === 'en' ? 'text-left' : 'text-right'}`}
           >
             {links.map((link) => (
               <a
@@ -91,8 +92,8 @@ export default function MobileMenu({ locale = 'ar' }: { locale?: Locale }) {
               </a>
             ))}
             <div className="mt-5 flex items-center justify-between border-t border-white/10 px-5 pt-5">
-              <span className="text-sm text-muted">{english ? 'Language' : 'اللغة'}</span>
-              <LanguageSwitcher locale={locale} />
+              <span className="text-sm text-muted">{t('language')}</span>
+              <LanguageSwitcher />
             </div>
           </nav>
         </div>

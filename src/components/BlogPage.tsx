@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import type { LocalizedBlogPost } from '../data/blogs';
 import type { Locale } from '../lib/i18n';
+import { useLocale } from 'next-intl';
 
 type CategoryKey = 'all' | 'tires' | 'batteries' | 'oils' | 'standards';
 
@@ -72,7 +73,8 @@ type Props = {
   selectedCategory: CategoryKey;
 };
 
-export default function BlogPage({ locale, articles, query, selectedCategory }: Props) {
+export default function BlogPage({ articles, query, selectedCategory }: Props) {
+  const locale = useLocale() as Locale;
   const english = locale === 'en';
   const labels = categoryLabels[locale];
   const featured = articles[0];

@@ -2,6 +2,7 @@
 
 import { ChevronDown, Check } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useLocale } from 'next-intl';
 
 type Option = { value: string; label: string };
 
@@ -9,13 +10,16 @@ export default function CustomSelect({
   name,
   options,
   defaultValue,
-  direction = 'rtl',
+  direction,
 }: {
   name: string;
   options: Option[];
   defaultValue: string;
   direction?: 'ltr' | 'rtl';
 }) {
+  const locale = useLocale();
+  const english = locale === 'en';
+  if (!direction) direction = english ? 'ltr' : 'rtl';
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
   const rootRef = useRef<HTMLDivElement>(null);

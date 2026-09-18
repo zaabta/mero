@@ -1,6 +1,5 @@
-import Link from 'next/link';
-import Image from 'next/image';
 import type { Locale } from '../lib/i18n';
+import { useLocale } from 'next-intl';
 
 type LegalSection = { title: string; paragraphs?: string[]; bullets?: string[] };
 
@@ -459,7 +458,8 @@ const termsSections: Record<Locale, LegalSection[]> = {
   ],
 };
 
-export default function LegalPage({ locale, type }: { locale: Locale; type: 'privacy' | 'terms' }) {
+export default function LegalPage({ type }: { type: 'privacy' | 'terms' }) {
+  const locale = useLocale() as Locale;
   const english = locale === 'en';
   const privacy = type === 'privacy';
   return (

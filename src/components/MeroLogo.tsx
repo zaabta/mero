@@ -1,23 +1,12 @@
-'use client';
 import Image from 'next/image';
-import type { Locale } from '../lib/i18n';
-import { isLocale } from '../lib/i18n';
-import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 
-
-export default function Logo({
-  locale = 'ar',
-  large = false,
-}: {
-  locale?: Locale;
-  large?: boolean;
-}) {
-    const pathname = usePathname();
-    const pathLocale = pathname?.split('/')[1];
-    const currentLocale = pathLocale && isLocale(pathLocale) ? pathLocale : locale;
-    const english = currentLocale === 'en';
+export default function Logo({ large = false }: { large?: boolean }) {
+  const t = useTranslations('brand');
+  const locale = useLocale();
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-row items-center gap-3" dir={locale === 'en' ? 'ltr' : 'rtl'}>
       <Image
         src="/mero-logo-white-gold.svg"
         alt="Mero"
@@ -27,10 +16,10 @@ export default function Logo({
         className={large ? 'h-14 w-[150px] object-contain' : 'h-11 w-[82px] object-contain'}
       />
       <span
-        dir={english ? 'ltr' : 'rtl'}
-        className={`block w-fit pt-2.5 text-sm leading-4 text-gold sm:max-w-none sm:text-[10px] lg:text-sm lg:leading-5 `}
+        dir={locale === 'en' ? 'ltr' : 'rtl'}
+        className="block w-fit whitespace-nowrap pt-2.5 text-sm leading-4 text-gold sm:max-w-none sm:text-[10px] lg:text-sm lg:leading-5"
       >
-        {english ? 'Al Thuraya Automotive Services' : 'شركة إطار الثريا لخدمات السيارات'}
+        {t('name')}
       </span>
     </div>
   );

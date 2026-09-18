@@ -1,0 +1,20 @@
+{
+  "header": {
+    "home": "Home",
+    "about": "About",
+    "products": "Products",
+    "brands": "Brands",
+    "blog": "Blog",
+    "contact": "Contact",
+    "language": "Language",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "brand": { "name": "Al Thuraya Automotive Services" },
+  "home": {
+    "brandsTitle": "Brands",
+    "brandsDescription": "A diverse selection of automotive brands for different vehicles, roads, and driving needs.",
+    "viewAllBrands": "View all brands",
+    "showLess": "Show less"
+  }
+}

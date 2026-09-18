@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import { headers } from 'next/headers';
 import { defaultLocale, isLocale } from '../lib/i18n';
 import './globals.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { getLocale, getMessages } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
 export const cairo = localFont({
   src: [
     { path: '../assets/fonts/cairo/Cairo-Regular.woff2', weight: '400', style: 'normal' },
@@ -19,8 +20,8 @@ export const cairo = localFont({
   fallback: ['Arial', 'sans-serif'],
 });
 export async function generateMetadata(): Promise<Metadata> {
-  const localeHeader = (await headers()).get('x-locale');
-  const locale = localeHeader && isLocale(localeHeader) ? localeHeader : defaultLocale;
+  const requestedLocale = await getLocale();
+  const locale = isLocale(requestedLocale) ? requestedLocale : defaultLocale;
   const base = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://thurayatires.com');
   const ogImage =
     locale === 'en' ? '/images/og/mero-og-image-en.jpg' : '/images/og/mero-og-image.jpg';
@@ -60,8 +61,9 @@ export async function generateMetadata(): Promise<Metadata> {
       };
 }
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const localeHeader = (await headers()).get('x-locale');
-  const locale = localeHeader && isLocale(localeHeader) ? localeHeader : defaultLocale;
+  const requestedLocale = await getLocale();
+  const locale = isLocale(requestedLocale) ? requestedLocale : defaultLocale;
+  const messages = await getMessages();
   return (
     <html
       lang={locale}
@@ -74,9 +76,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={cairo.className} suppressHydrationWarning>
-        <Header locale={locale} />
-        {children}
-        <Footer locale={locale} />
+        <NextIntlClientProvider messages={messages}>
+          <Header locale={locale} />
+          {children}
+          <Footer locale={locale} />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

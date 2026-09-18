@@ -2,13 +2,14 @@
 
 import { MapPin, Navigation, Phone } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import type { Locale } from '../../lib/i18n';
+import { useLocale } from 'next-intl';
 import { branches } from '../../data/branches';
 
 const mapboxStyle = 'mapbox://styles/mapbox/dark-v11';
 const mainBranchCoordinates: [number, number] = [46.7291548, 24.6488506];
 
-export default function MeroMap({ locale }: { locale: Locale }) {
+export default function MeroMap() {
+  const locale = useLocale();
   const english = locale === 'en';
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import('mapbox-gl').Map | null>(null);

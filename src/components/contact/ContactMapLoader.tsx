@@ -1,10 +1,10 @@
-'use client';
+import { Suspense } from 'react';
+import MeroMap from './MeroMap';
 
-import dynamic from 'next/dynamic';
-import type { Locale } from '../../lib/i18n';
-
-const MeroMap = dynamic(() => import('./MeroMap'), { ssr: false });
-
-export default function ContactMapLoader({ locale }: { locale: Locale }) {
-  return <MeroMap locale={locale} />;
+export default function ContactMapLoader() {
+  return (
+    <Suspense fallback={<div>Loading map…</div>}>
+      <MeroMap />
+    </Suspense>
+  );
 }

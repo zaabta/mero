@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import CustomSelect from './CustomSelect';
+import { useLocale } from 'next-intl';
 
 const productOptions = (english: boolean) => [
   {
@@ -18,7 +19,9 @@ const productOptions = (english: boolean) => [
   },
 ];
 
-export default function ContactForm({ english }: { english: boolean }) {
+export default function ContactForm() {
+  const locale = useLocale();
+  const english = locale === 'en';
   const [product, setProduct] = useState('tires');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [error, setError] = useState('');

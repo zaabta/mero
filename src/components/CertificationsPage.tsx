@@ -1,4 +1,5 @@
 import type { Locale } from '../lib/i18n';
+import { useLocale } from 'next-intl';
 
 type Section = { title: string; paragraphs?: string[]; bullets?: string[] };
 
@@ -215,7 +216,8 @@ const sections: Record<Locale, Section[]> = {
   ],
 };
 
-export default function CertificationsPage({ locale }: { locale: Locale }) {
+export default function CertificationsPage() {
+  const locale = useLocale() as Locale;
   const english = locale === 'en';
 
   return (

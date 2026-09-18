@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
+import { getLocale } from 'next-intl/server';
 import NotFoundPage from '../../components/errors/NotFoundPage';
 import { defaultLocale, isLocale } from '../../lib/i18n';
 
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LocaleNotFound() {
-  const localeHeader = (await headers()).get('x-locale');
-  const locale = localeHeader && isLocale(localeHeader) ? localeHeader : defaultLocale;
+  const requestedLocale = await getLocale();
+  const locale = isLocale(requestedLocale) ? requestedLocale : defaultLocale;
   return <NotFoundPage locale={locale} />;
 }

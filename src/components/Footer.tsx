@@ -1,19 +1,10 @@
-'use client';
 import Logo from './MeroLogo';
-import type { Locale } from '../lib/i18n';
-import { isLocale } from '../lib/i18n';
-import { usePathname } from 'next/navigation';
+import { useLocale } from 'next-intl';  
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { BadgeCheck } from 'lucide-react';
 
-export default function Footer({
-  locale = 'ar',
-}: {
-  locale?: Locale;
-}) {
-  const pathname = usePathname();
-  const pathLocale = pathname?.split('/')[1];
-  const currentLocale = pathLocale && isLocale(pathLocale) ? pathLocale : locale;
+export default function Footer() {
+  const currentLocale = useLocale();
   const english = currentLocale === 'en';
   return (
     <footer
@@ -26,7 +17,7 @@ export default function Footer({
             dir={english ? 'ltr' : 'rtl'}
             className={`flex flex-col items-start gap-4 lg:col-span-4 ${english ? 'text-left' : 'text-right'}`}
           >
-            <Logo locale={currentLocale} large />
+            <Logo large />
             <span className="text-[11px] text-muted">
               {english
                 ? 'AL THURAYA TIRES AUTO SERVICES CO. • Wholesale & Retail Tires Trading'
@@ -149,13 +140,13 @@ export default function Footer({
             </span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-5">
-            <a className="transition-colors hover:text-gold" href={`/${locale}/privacy`}>
+            <a className="transition-colors hover:text-gold" href={`/${currentLocale}/privacy`}>
               {english ? 'Privacy policy' : 'سياسة الخصوصية'}
             </a>
-            <a className="transition-colors hover:text-gold" href={`/${locale}/terms`}>
+            <a className="transition-colors hover:text-gold" href={`/${currentLocale}/terms`}>
               {english ? 'Terms and conditions' : 'الشروط والأحكام'}
             </a>
-            <a className="transition-colors hover:text-gold" href={`/${locale}/certifications`}>
+            <a className="transition-colors hover:text-gold" href={`/${currentLocale}/certifications`}>
               {english ? 'Quality standards' : 'شهادة الجودة والمقاييس'}
             </a>
           </div>

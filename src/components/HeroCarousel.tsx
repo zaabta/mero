@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { BatteryCharging, Droplets, Gauge } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import type { Locale } from '../lib/i18n';
+import { useLocale } from 'next-intl';
 
 const slides = [
   {
@@ -50,9 +50,10 @@ const slides = [
   },
 ];
 
-export default function HeroCarousel({ locale = 'ar' }: { locale?: Locale }) {
+export default function HeroCarousel() {
   const [active, setActive] = useState(0);
   const current = slides[active];
+  const locale = useLocale();
   const english = locale === 'en';
   const copy = english
     ? [
