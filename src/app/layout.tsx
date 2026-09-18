@@ -21,22 +21,43 @@ export const cairo = localFont({
 export async function generateMetadata(): Promise<Metadata> {
   const localeHeader = (await headers()).get('x-locale');
   const locale = localeHeader && isLocale(localeHeader) ? localeHeader : defaultLocale;
-  const base = new URL('https://mero-ten-mocha.vercel.app');
+  const base = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://thurayatires.com');
+  const ogImage =
+    locale === 'en' ? '/images/og/mero-og-image-en.jpg' : '/images/og/mero-og-image.jpg';
+  const ogImageUrl = new URL(ogImage, base).toString();
+  const ogAlt =
+    locale === 'en'
+      ? 'Mero – High-quality tires for a safer journey'
+      : 'Mero – إطارات عالية الجودة لرحلة أكثر أمانًا';
   return locale === 'en'
     ? {
-      metadataBase: base,
-      title: 'Mero | Premium Automotive Solutions',
-      description:
-        'Premium tires, batteries, oils, filters, and automotive supply solutions in Saudi Arabia.',
-      icons: { icon: '/mero-logo-white-gold.svg', apple: '/mero-logo-white-gold.svg' },
-    }
+        metadataBase: base,
+        title: 'Mero | Premium Automotive Solutions',
+        description:
+          'Premium tires, batteries, oils, filters, and automotive supply solutions in Saudi Arabia.',
+        icons: { icon: '/mero-logo-white-gold.svg', apple: '/mero-logo-white-gold.svg' },
+        openGraph: {
+          type: 'website',
+          siteName: 'Mero',
+          locale: 'en_US',
+          images: [{ url: ogImageUrl, width: 1200, height: 630, alt: ogAlt }],
+        },
+        twitter: { card: 'summary_large_image', images: [ogImageUrl] },
+      }
     : {
-      metadataBase: base,
-      title: 'Mero | حلول السيارات الراقية',
-      description:
-        'إطارات وبطاريات وزيوت وفلاتر وحلول توريد السيارات الراقية في المملكة العربية السعودية.',
-      icons: { icon: '/mero-logo-white-gold.svg', apple: '/mero-logo-white-gold.svg' },
-    };
+        metadataBase: base,
+        title: 'Mero | حلول السيارات الراقية',
+        description:
+          'إطارات وبطاريات وزيوت وفلاتر وحلول توريد السيارات الراقية في المملكة العربية السعودية.',
+        icons: { icon: '/mero-logo-white-gold.svg', apple: '/mero-logo-white-gold.svg' },
+        openGraph: {
+          type: 'website',
+          siteName: 'Mero',
+          locale: 'ar_SA',
+          images: [{ url: ogImageUrl, width: 1200, height: 630, alt: ogAlt }],
+        },
+        twitter: { card: 'summary_large_image', images: [ogImageUrl] },
+      };
 }
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const localeHeader = (await headers()).get('x-locale');

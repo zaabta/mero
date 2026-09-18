@@ -10,10 +10,25 @@ export interface BlogPost {
   image: string;
   imageAlt: string;
   createdAt: string;
+  updatedAt?: string;
   readingTime: number;
   seoTitle: string;
   seoDescription: string;
 }
+
+export type LocalizedText = { ar: string; en: string };
+
+export type LocalizedBlogPost = Omit<
+  BlogPost,
+  'title' | 'description' | 'content' | 'imageAlt' | 'seoTitle' | 'seoDescription'
+> & {
+  title: LocalizedText;
+  description: LocalizedText;
+  content: LocalizedText;
+  imageAlt: LocalizedText;
+  seoTitle: LocalizedText;
+  seoDescription: LocalizedText;
+};
 
 export const blogs: BlogPost[] = [
   {
@@ -521,3 +536,163 @@ export const blogs: BlogPost[] = [
 export const getBlogBySlug = (slug: string) => blogs.find((blog) => blog.slug === slug);
 
 export const getBlogsByType = (type: BlogCategory) => blogs.filter((blog) => blog.type === type);
+
+type EnglishBlogCopy = {
+  title: string;
+  description: string;
+  content: string;
+  imageAlt: string;
+  seoTitle: string;
+  seoDescription: string;
+};
+
+const englishBlogCopy: Record<string, EnglishBlogCopy> = {
+  'how-to-choose-the-right-tire-for-gcc-roads': {
+    title: 'How to choose the right tire for GCC roads and climates',
+    description:
+      'A practical guide to size, tread pattern, load index and speed rating for heat, daily driving and long roads.',
+    content:
+      'Choosing the right tire is about more than appearance or price. Match the size, load index and speed rating to the vehicle manufacturer’s requirements, then select a tread pattern that fits your real driving conditions. In Gulf heat, correct pressure, trusted sourcing and regular inspection are essential for grip, comfort and service life.',
+    imageAlt: 'High-performance Mero tire in a modern workshop beside a desert road',
+    seoTitle: 'Choosing the right tire for GCC roads | Mero',
+    seoDescription:
+      'Learn how to choose tires that match your vehicle, road conditions and hot Gulf climate.',
+  },
+  'car-battery-care-in-hot-weather': {
+    title: 'Why car batteries are affected by heat and how to protect them',
+    description:
+      'Learn the warning signs of battery weakness and the checks that help prevent sudden failure in hot weather.',
+    content:
+      'High temperatures accelerate chemical reactions inside a battery and can shorten its service life. Watch for slow starting, dim lights, corrosion or swelling, and have both the battery and charging system tested. Clean connections, correct capacity and preventive inspection are especially important before long trips.',
+    imageAlt: 'Mero car battery inside a modern engine bay in a hot Gulf climate',
+    seoTitle: 'Car battery care in hot weather | Mero',
+    seoDescription:
+      'Practical advice for checking and protecting a car battery from high temperatures.',
+  },
+  'choosing-the-right-engine-oil': {
+    title: 'Choosing engine oil: what do viscosity grades mean?',
+    description:
+      'A clear explanation of grades such as 5W-30 and 10W-40 and why the approved specification matters.',
+    content:
+      'Engine oil reduces friction, helps control heat and carries contaminants away from internal parts. Choose the viscosity and performance specification listed in the vehicle manual. Oil type, change interval, filter quality and driving conditions all matter; a higher price alone does not make an oil suitable.',
+    imageAlt: 'Mero engine oil being poured into a modern vehicle engine',
+    seoTitle: 'How to choose engine oil and viscosity | Mero',
+    seoDescription:
+      'Understand engine oil viscosity grades and choose the specification your vehicle requires.',
+  },
+  'tire-standards-and-compliance-checklist': {
+    title: 'Before buying a tire: a specification and compliance checklist',
+    description:
+      'How to check tire data, source, labels and compatibility before purchase and installation.',
+    content:
+      'A safe tire purchase combines correct vehicle compatibility, a sound physical condition and a traceable source. Check the sidewall data, production information, load and speed ratings, invoice and available conformity documents. Requirements can change, so current local guidance should be confirmed before purchase.',
+    imageAlt: 'Technician checking the tread depth of a Mero tire with a digital gauge',
+    seoTitle: 'Tire specification and compliance checklist | Mero',
+    seoDescription:
+      'A practical checklist for verifying tire data, source, condition and conformity before purchase.',
+  },
+  'tire-pressure-in-gulf-summer': {
+    title: 'Tire pressure in summer: why it changes and how to set it',
+    description:
+      'How Gulf heat affects tire pressure, when to measure it and which signs require inspection.',
+    content:
+      'Air expands as a tire heats up and contracts as it cools. Measure pressure when the tires are cold and use the vehicle manufacturer’s door-sticker or manual as the reference. Regular checks before travel improve stability, tire life and fuel efficiency.',
+    imageAlt: 'Technician checking the pressure of a Mero tire in a modern workshop',
+    seoTitle: 'Correct tire pressure in summer and Gulf heat | Mero',
+    seoDescription:
+      'Learn when to check tire pressure and how to maintain it in hot Saudi and Gulf conditions.',
+  },
+  'what-uneven-tire-wear-tells-you': {
+    title: 'What uneven tire wear tells you about your vehicle',
+    description:
+      'Recognise common wear patterns and connect them to pressure, alignment, balancing and suspension checks.',
+    content:
+      'Wear patterns can reveal issues with pressure, alignment, balancing or suspension. Inspect tread depth at several points and investigate recurring wear before fitting replacement tires. Early diagnosis helps protect the next set and supports safer handling.',
+    imageAlt: 'Comparison of worn and healthy Mero tires inside a service centre',
+    seoTitle: 'Causes of uneven tire wear | Mero',
+    seoDescription:
+      'Understand what center, shoulder and irregular tire wear can indicate about your vehicle.',
+  },
+  'early-signs-of-car-battery-failure': {
+    title: '7 early signs of car battery failure',
+    description:
+      'Signs that can reveal a weak battery before the vehicle stops, especially in hot climates.',
+    content:
+      'Slow cranking, dim lights, warning messages, repeated jump starts, weak electrical systems, swelling and terminal corrosion can all indicate a battery problem. The alternator, starter and connections should also be tested before replacing the battery.',
+    imageAlt: 'Mero battery tested with a diagnostic device inside an engine bay',
+    seoTitle: 'Signs of a weak car battery before failure | Mero',
+    seoDescription:
+      'Learn the main symptoms of a weak car battery and how to test it before an unexpected stop.',
+  },
+  'how-to-choose-correct-car-battery': {
+    title: 'How to choose the correct car battery capacity',
+    description:
+      'A simple guide to physical size, capacity, starting power and terminal position before buying a battery.',
+    content:
+      'The correct replacement battery must fit the tray, match terminal polarity and provide the capacity and starting power specified for the vehicle. Modern start-stop systems may require a specific battery technology and registration after replacement.',
+    imageAlt: 'Two Mero batteries in different sizes inside a service centre',
+    seoTitle: 'Choosing the right car battery and size | Mero',
+    seoDescription:
+      'Learn how to match battery size, capacity, polarity and technology to your vehicle.',
+  },
+  'why-engine-oil-filter-matters': {
+    title: 'Oil filters: the small part that protects your engine',
+    description:
+      'How an oil filter works, when to replace it and why the correct filter matters for engine protection.',
+    content:
+      'An oil filter captures contaminants while allowing the correct flow through the engine. Use the part number specified for the vehicle, replace the filter according to the service schedule and check for leaks after installation. A warning oil-pressure light requires immediate attention.',
+    imageAlt: 'Mero oil filter and engine oil beside engine components',
+    seoTitle: 'Why an engine oil filter matters and when to replace it | Mero',
+    seoDescription:
+      'Understand oil filter function, replacement timing and the importance of correct fitment.',
+  },
+  'engine-oil-change-intervals-severe-driving': {
+    title: 'When to change engine oil under severe driving conditions',
+    description:
+      'What severe use means and how to choose a suitable oil-change interval instead of relying on one generic number.',
+    content:
+      'Short trips, heavy traffic, high heat, dust, heavy loads and long idling can count as severe operating conditions. Follow the vehicle manual, use the required oil specification and track both time and distance since the previous service.',
+    imageAlt: 'Technician holding Mero engine oil beside a vehicle in a workshop',
+    seoTitle: 'When to change engine oil in hot and severe conditions | Mero',
+    seoDescription:
+      'A guide to oil-change intervals for traffic, heat, dust, short trips and heavy driving.',
+  },
+  'how-to-read-tire-sidewall-symbols': {
+    title: 'How to read tire sidewall symbols step by step',
+    description:
+      'Understand tire size, load index, speed rating and production date as shown on the sidewall.',
+    content:
+      'The sidewall provides a compact identification label. Read the width, aspect ratio, construction, wheel diameter, load index and speed rating, then compare every value with the vehicle specification. Production date and installation-direction marks should also be checked.',
+    imageAlt: 'Close-up of tire size symbols on a Mero tire sidewall',
+    seoTitle: 'Tire sidewall symbols and size explained | Mero',
+    seoDescription:
+      'Understand tire numbers, load index, speed rating and production date before buying.',
+  },
+  'verify-tire-storage-and-source': {
+    title: 'How to verify tire storage and source before purchase',
+    description:
+      'A practical inspection list for storage conditions, physical condition, invoice and traceability before installation.',
+    content:
+      'Tire condition depends on more than brand and production date. Check that tires were protected from direct sun, excessive heat, moisture, oils and deformation. Buy through a trusted source, keep the invoice and inspect every tire before installation.',
+    imageAlt: 'Technician inspecting a Mero tire inside an organised storage facility',
+    seoTitle: 'How to check tire storage and source before purchase | Mero',
+    seoDescription:
+      'Practical steps for checking tire condition, storage, source and documents before fitting.',
+  },
+};
+
+export const localizedBlogs: LocalizedBlogPost[] = blogs.map((blog) => {
+  const english = englishBlogCopy[blog.slug];
+  return {
+    ...blog,
+    title: { ar: blog.title, en: english.title },
+    description: { ar: blog.description, en: english.description },
+    content: { ar: blog.content, en: english.content },
+    imageAlt: { ar: blog.imageAlt, en: english.imageAlt },
+    seoTitle: { ar: blog.seoTitle, en: english.seoTitle },
+    seoDescription: { ar: blog.seoDescription, en: english.seoDescription },
+  };
+});
+
+export const getLocalizedBlogBySlug = (slug: string) =>
+  localizedBlogs.find((blog) => blog.slug === slug);

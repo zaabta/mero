@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -14,11 +12,12 @@ import {
   Search,
   type LucideIcon,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { blogs, type BlogCategory } from '../data/blogs';
+import type { LocalizedBlogPost } from '../data/blogs';
 import type { Locale } from '../lib/i18n';
 
-const categoryLabels = {
+type CategoryKey = 'all' | 'tires' | 'batteries' | 'oils' | 'standards';
+
+const categoryLabels: Record<Locale, Record<CategoryKey, string>> = {
   ar: {
     all: 'الكل',
     tires: 'تقنية الإطارات',
@@ -33,16 +32,16 @@ const categoryLabels = {
     oils: 'Oils and engines',
     standards: 'Standards and compliance',
   },
-} as const;
+};
 
-const categoryKeys: Record<BlogCategory, keyof (typeof categoryLabels)['ar']> = {
+const categoryKeys: Record<LocalizedBlogPost['type'], Exclude<CategoryKey, 'all'>> = {
   'تقنية الإطارات': 'tires',
   'البطاريات والمناخ الحار': 'batteries',
   'الزيوت والمحركات': 'oils',
   'المعايير والمطابقة': 'standards',
 };
 
-const categoryIcons: Record<keyof (typeof categoryLabels)['ar'], LucideIcon> = {
+const categoryIcons: Record<CategoryKey, LucideIcon> = {
   all: ListFilter,
   tires: CircleGauge,
   batteries: BatteryCharging,
@@ -58,23 +57,26 @@ function formatBlogDate(date: string, locale: Locale) {
   }).format(new Date(`${date}T00:00:00`));
 }
 
-export default function BlogPage({ locale }: { locale: Locale }) {
+function blogHref(locale: Locale, category: CategoryKey, query: string) {
+  const params = new URLSearchParams();
+  if (category !== 'all') params.set('category', category);
+  if (query) params.set('q', query);
+  const search = params.toString();
+  return `/${locale}/blog${search ? `?${search}` : ''}`;
+}
+
+type Props = {
+  locale: Locale;
+  articles: LocalizedBlogPost[];
+  query: string;
+  selectedCategory: CategoryKey;
+};
+
+export default function BlogPage({ locale, articles, query, selectedCategory }: Props) {
   const english = locale === 'en';
   const labels = categoryLabels[locale];
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<'all' | keyof (typeof categoryLabels)['ar']>('all');
-  const filteredArticles = useMemo(
-    () =>
-      blogs.filter((article) => {
-        const text = `${article.title} ${article.description}`.toLowerCase();
-        return (
-          (category === 'all' || categoryKeys[article.type] === category) &&
-          text.includes(query.toLowerCase().trim())
-        );
-      }),
-    [category, query],
-  );
-  const featured = filteredArticles[0];
+  const featured = articles[0];
+  const Arrow = english ? ArrowRight : ArrowLeft;
 
   return (
     <main dir={english ? 'ltr' : 'rtl'} className="min-h-screen bg-void pt-[72px] text-white">
@@ -93,7 +95,7 @@ export default function BlogPage({ locale }: { locale: Locale }) {
                 </>
               ) : (
                 <>
-                  مدونة <span className="text-gold">ميرو</span> ومركز المعرفة الفنية
+                  مدونة <span className="text-gold">Mero</span> ومركز المعرفة الفنية
                 </>
               )}
             </h1>
@@ -103,43 +105,53 @@ export default function BlogPage({ locale }: { locale: Locale }) {
                 : 'مقالات احترافية واستراتيجيات صيانة متقدمة للأجواء الخليجية وتقنيات الإطارات والبطاريات والزيوت.'}
             </p>
           </div>
-          <label className="relative w-full lg:w-96">
-            <span className="sr-only">{english ? 'Search articles' : 'ابحث في المقالات'}</span>
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              className="field w-full pe-11 text-sm"
-              placeholder={english ? 'Search articles…' : 'ابحث عن مقال أو معيار…'}
-              type="search"
-            />
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gold"
-              size={18}
-            />
-          </label>
+          <form action={`/${locale}/blog`} method="get" className="w-full lg:w-96">
+            <label className="relative block">
+              <span className="sr-only">{english ? 'Search articles' : 'ابحث في المقالات'}</span>
+              <input
+                name="q"
+                defaultValue={query}
+                className="field w-full pe-11 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                placeholder={english ? 'Search articles…' : 'ابحث عن مقال أو معيار…'}
+                type="search"
+              />
+              <Search
+                aria-hidden="true"
+                className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gold"
+                size={18}
+              />
+            </label>
+            <input type="hidden" name="category" value={selectedCategory} />
+          </form>
         </div>
-        <div
+        <nav
           className="mt-8 flex gap-2 overflow-x-auto pb-2"
-          role="list"
           aria-label={english ? 'Article categories' : 'تصنيفات المقالات'}
         >
           {(['all', 'tires', 'batteries', 'oils', 'standards'] as const).map((item) => {
             const Icon = categoryIcons[item];
+            const active = selectedCategory === item;
             return (
-              <button
+              <Link
                 key={item}
-                type="button"
-                onClick={() => setCategory(item)}
-                aria-pressed={category === item}
-                className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-xs transition ${category === item ? 'border-gold bg-gold text-void' : 'border-white/10 bg-carbon text-muted hover:border-gold/50 hover:text-gold'}`}
+                href={blogHref(locale, item, query)}
+                aria-current={active ? 'page' : undefined}
+                className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void motion-reduce:transition-none ${active ? 'border-gold bg-gold text-void' : 'border-white/10 bg-carbon text-muted hover:border-gold/50 hover:text-gold'}`}
               >
                 <Icon aria-hidden="true" size={15} strokeWidth={1.8} />
                 <span>{labels[item]}</span>
-              </button>
+              </Link>
             );
           })}
-        </div>
+          {(query || selectedCategory !== 'all') && (
+            <Link
+              href={`/${locale}/blog`}
+              className="inline-flex shrink-0 items-center px-3 py-2 text-xs text-muted underline underline-offset-4 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+            >
+              {english ? 'Clear filters' : 'مسح التصفية'}
+            </Link>
+          )}
+        </nav>
       </section>
 
       <section className="container pb-20">
@@ -148,7 +160,7 @@ export default function BlogPage({ locale }: { locale: Locale }) {
             <div className="relative min-h-[280px] lg:col-span-7 lg:min-h-[420px]">
               <Image
                 src={featured.image}
-                alt={featured.imageAlt}
+                alt={featured.imageAlt[locale]}
                 fill
                 priority
                 sizes="(max-width: 1023px) 100vw, 58vw"
@@ -162,10 +174,10 @@ export default function BlogPage({ locale }: { locale: Locale }) {
                 </span>
                 <h2 className="mt-4 font-arabic text-2xl font-bold leading-tight lg:text-4xl">
                   <Link href={`/${locale}/blog/${featured.slug}`} className="hover:text-gold">
-                    {featured.title}
+                    {featured.title[locale]}
                   </Link>
                 </h2>
-                <p className="mt-4 text-sm leading-8 text-muted">{featured.description}</p>
+                <p className="mt-4 text-sm leading-8 text-muted">{featured.description[locale]}</p>
               </div>
               <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-4 text-xs text-muted">
                 <span className="inline-flex items-center gap-1">
@@ -185,33 +197,33 @@ export default function BlogPage({ locale }: { locale: Locale }) {
         )}
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {filteredArticles.slice(1).map((article) => (
+          {articles.slice(1).map((article) => (
             <Link
               key={article.slug}
               href={`/${locale}/blog/${article.slug}`}
-              className="group overflow-hidden rounded-xl border border-white/10 bg-carbon transition hover:-translate-y-0.5 hover:border-gold/50"
+              className="group overflow-hidden rounded-xl border border-white/10 bg-carbon transition hover:-translate-y-0.5 hover:border-gold/50 motion-reduce:transition-none"
             >
               <div className="relative h-52 overflow-hidden bg-raised">
                 <Image
                   src={article.image}
-                  alt={article.imageAlt}
+                  alt={article.imageAlt[locale]}
                   fill
                   sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
+                  className="object-cover transition duration-500 group-hover:scale-105 motion-reduce:transition-none"
                 />
               </div>
               <div className="flex min-h-48 flex-col justify-between gap-5 p-5">
                 <div>
                   <span className="label text-gold">{labels[categoryKeys[article.type]]}</span>
                   <h3 className="mt-3 font-arabic text-lg font-bold leading-7 group-hover:text-gold">
-                    {article.title}
+                    {article.title[locale]}
                   </h3>
-                  <p className="mt-2 text-xs leading-6 text-muted">{article.description}</p>
+                  <p className="mt-2 text-xs leading-6 text-muted">{article.description[locale]}</p>
                 </div>
                 <div className="flex items-center justify-between border-t border-white/10 pt-4 text-xs text-muted">
                   <span className="inline-flex items-center gap-1">
                     <Clock size={14} className="text-gold" />
-                    {article.readingTime} {english ? 'min' : 'د'}
+                    {article.readingTime} {english ? 'min read' : 'دقائق قراءة'}
                   </span>
                   <time dateTime={article.createdAt}>
                     {formatBlogDate(article.createdAt, locale)}
@@ -223,10 +235,9 @@ export default function BlogPage({ locale }: { locale: Locale }) {
         </div>
         <Link
           href={`/${locale}#contact`}
-          className="btn btn-primary mx-auto mt-10 flex w-fit gap-2 px-6 text-sm"
+          className="btn btn-primary mx-auto mt-10 flex w-fit gap-2 px-6 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void"
         >
-          {english ? 'Talk to our experts' : 'تواصل مع خبرائنا'}
-          {english ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+          {english ? 'Talk to our experts' : 'تواصل مع خبرائنا'} <Arrow size={16} />
         </Link>
       </section>
     </main>
