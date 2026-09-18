@@ -21,7 +21,9 @@ import QuoteButton from '../components/QuoteButton';
 import ContactMapLoader from '../components/contact/ContactMapLoader';
 import BrandGrid from '../components/BrandGrid';
 import {getTranslations} from 'next-intl/server';
-import {routing, type Locale} from '@/i18n/routing';
+import {permanentRedirect} from 'next/navigation';
+import type {Locale} from '@/i18n/routing';
+import {SITE_URL} from '@/lib/site';
 
 const products = [
   {
@@ -130,23 +132,46 @@ function ProductCard({
     </article>
   );
 }
-export default async function Home({locale = routing.defaultLocale}: {locale?: Locale}) {
+export async function Home({locale}: {locale: Locale}) {
   const english = locale === 'en';
   const t = await getTranslations('home');
+  const logoUrl = `${SITE_URL}/mero-logo-white-gold.svg`;
   const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'AutoPartsStore',
-    name: 'Mero | Al Thuraya Automotive Services',
-    url: `https://mero-ten-mocha.vercel.app/${locale}`,
-    telephone: '+966112204999',
-    email: 'Thrya.tire@gmail.com',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Prince Fahd bin Ibrahim Al Saud Street, Al Malaz',
-      addressLocality: 'Riyadh',
-      postalCode: '12644',
-      addressCountry: 'SA',
-    },
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${SITE_URL}/#organization`,
+        name: 'Al Thuraya Automotive Services',
+        url: SITE_URL,
+        logo: logoUrl,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${SITE_URL}/#website`,
+        name: 'Mero',
+        url: SITE_URL,
+        publisher: {'@id': `${SITE_URL}/#organization`},
+      },
+      {
+        '@type': 'AutoPartsStore',
+        '@id': `${SITE_URL}/#business`,
+        name: 'Mero | Al Thuraya Automotive Services',
+        url: `${SITE_URL}/${locale}`,
+        image: `${SITE_URL}/images/og/${english ? 'mero-og-image-en.jpg' : 'mero-og-image.jpg'}`,
+        logo: logoUrl,
+        isPartOf: {'@id': `${SITE_URL}/#website`},
+        telephone: '+966112204999',
+        email: 'Thrya.tire@gmail.com',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Prince Fahd bin Ibrahim Al Saud Street, Al Malaz',
+          addressLocality: 'Riyadh',
+          postalCode: '12644',
+          addressCountry: 'SA',
+        },
+      },
+    ],
   };
   return (
     <main dir={english ? 'ltr' : 'rtl'}>
@@ -587,4 +612,8 @@ export default async function Home({locale = routing.defaultLocale}: {locale?: L
       </section>
     </main>
   );
+}
+
+export default function RootPage() {
+  permanentRedirect('/ar');
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import Image, {getImageProps} from 'next/image';
 import { BatteryCharging, Droplets, Gauge } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
@@ -50,6 +50,44 @@ const slides = [
   },
 ];
 
+function ResponsiveHeroImage({
+  slide,
+  english,
+  priority,
+}: {
+  slide: (typeof slides)[number];
+  english: boolean;
+  priority: boolean;
+}) {
+  const alt = english ? slide.altEn : slide.alt;
+  const mobileImage = getImageProps({
+    src: slide.imageMobile,
+    alt,
+    width: 1448,
+    height: 1086,
+    sizes: '(max-width: 639px) 100vw, 576px',
+  }).props;
+
+  return (
+    <picture className="absolute inset-0 block">
+      <source
+        media="(max-width: 1023px)"
+        srcSet={mobileImage.srcSet}
+        sizes="(max-width: 639px) 100vw, 576px"
+      />
+      <Image
+        src={english ? slide.imageLtr : slide.image}
+        alt={alt}
+        fill
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
+        sizes="100vw"
+        className="object-cover object-center"
+      />
+    </picture>
+  );
+}
+
 export default function HeroCarousel() {
   const [active, setActive] = useState(0);
   const current = slides[active];
@@ -98,22 +136,9 @@ export default function HeroCarousel() {
       aria-label={english ? 'Mero products' : 'منتجات Mero'}
       className="relative h-auto min-h-0 overflow-hidden pb-6 pt-24 lg:h-[750px] lg:pb-0 lg:pt-[72px]"
     >
-      {slides.map((slide, index) => (
-        <div
-          key={slide.image}
-          aria-hidden={index !== active}
-          className={`absolute inset-0 hidden transition-opacity duration-1000 lg:block ${index === active ? 'z-10 opacity-100' : 'pointer-events-none z-0 opacity-0'}`}
-        >
-          <Image
-            src={english ? slide.imageLtr : slide.image}
-            alt={english ? slide.altEn : slide.alt}
-            fill
-            priority={index === 0}
-            sizes="(min-width: 1024px) 100vw, 0px"
-            className="object-cover object-center"
-          />
-        </div>
-      ))}
+      <div className="absolute inset-0 hidden transition-opacity duration-1000 lg:block">
+        <ResponsiveHeroImage slide={current} english={english} priority={active === 0} />
+      </div>
       <div className="container relative z-20 flex h-full items-start lg:items-center">
         <div
           className={`w-full max-w-xl rounded-xl bg-void/30 p-4 backdrop-blur-[1px] sm:p-7 lg:bg-transparent lg:p-0 ${english ? 'text-left' : 'text-right'}`}
@@ -122,7 +147,12 @@ export default function HeroCarousel() {
             <current.icon size={14} />
             {copy.eyebrow}
           </div>
-          <h1
+          <h1 className="mb-3 font-arabic text-2xl font-bold leading-tight text-white sm:text-3xl">
+            {english
+              ? 'Complete Tire, Battery and Automotive Solutions'
+              : 'حلول متكاملة للإطارات والبطاريات وخدمات السيارات'}
+          </h1>
+          <h2
             className={`font-arabic text-3xl font-bold text-white sm:text-5xl lg:text-[50px] ${english ? 'leading-[1.05] sm:leading-[1.1] lg:leading-[1.15]' : 'leading-[1.1] sm:leading-[1.2] lg:leading-[1.35]'}`}
           >
             {copy.title}
@@ -130,7 +160,7 @@ export default function HeroCarousel() {
             <span className={`block text-gold ${english ? 'pt-0' : 'pt-0 sm:pt-3'}`}>
               {copy.accent}
             </span>
-          </h1>
+          </h2>
           <div className="mt-4 flex w-full items-start gap-2 text-[#d0c5af]">
             <current.icon className="mt-1 shrink-0 text-gold" size={22} />
             <p className="min-w-0 flex-1 text-sm leading-7 sm:text-base sm:leading-8">
@@ -138,13 +168,7 @@ export default function HeroCarousel() {
             </p>
           </div>
           <div className="relative mt-6 h-[300px] overflow-hidden rounded-lg bg-carbon shadow-xl sm:h-[380px] lg:hidden">
-            <Image
-              src={current.imageMobile}
-              alt={english ? current.altEn : current.alt}
-              fill
-              sizes="(max-width: 639px) 100vw, 640px"
-              className="object-cover object-center"
-            />
+            <ResponsiveHeroImage slide={current} english={english} priority={active === 0} />
           </div>
           <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap sm:gap-4">
             <a

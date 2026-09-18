@@ -3,6 +3,7 @@ import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {getMessages, setRequestLocale} from 'next-intl/server';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
+import {SITE_URL} from '@/lib/site';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import {cairo} from '../font';
@@ -16,13 +17,15 @@ export function generateStaticParams() {
 export async function generateMetadata({params}: Omit<Props, 'children'>): Promise<Metadata> {
   const {locale} = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
-  const base = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://thurayatires.com');
+  const base = new URL(SITE_URL);
   const english = locale === 'en';
-  const image = english ? '/images/og/mero-og-image-en.jpg' : '/images/og/mero-og-image.jpg';
-  const title = english ? 'Mero | Premium Automotive Solutions' : 'Mero | حلول السيارات الراقية';
+  const image = `${SITE_URL}${english ? '/images/og/mero-og-image-en.jpg' : '/images/og/mero-og-image.jpg'}`;
+  const title = english
+    ? 'Tires, Batteries and Car Services in Riyadh | Mero'
+    : 'إطارات وبطاريات وزيوت سيارات في الرياض | ميرو';
   const description = english
-    ? 'Premium tires, batteries, oils, filters, and automotive supply solutions in Saudi Arabia.'
-    : 'إطارات وبطاريات وزيوت وفلاتر وحلول توريد السيارات الراقية في المملكة العربية السعودية.';
+    ? 'Mero by Al Thuraya Automotive Services provides tires, car batteries, engine oils and professional automotive services in Riyadh for Saudi driving conditions.'
+    : 'ميرو من شركة إطار الثريا لخدمات السيارات توفر إطارات وبطاريات وزيوت محركات وخدمات سيارات في الرياض، مع منتجات موثوقة وخدمة متخصصة لظروف المملكة.';
   return {
     metadataBase: base,
     title,
@@ -33,8 +36,12 @@ export async function generateMetadata({params}: Omit<Props, 'children'>): Promi
       locale: english ? 'en_US' : 'ar_SA', images: [{url: image, width: 1200, height: 630}]
     },
     alternates: {
-      canonical: `/${locale}`,
-      languages: {ar: '/ar', en: '/en', 'x-default': '/ar'}
+      canonical: `${SITE_URL}/${locale}`,
+      languages: {
+        ar: `${SITE_URL}/ar`,
+        en: `${SITE_URL}/en`,
+        'x-default': `${SITE_URL}/ar`
+      }
     }
   };
 }

@@ -5,9 +5,8 @@ import { notFound } from 'next/navigation';
 import {hasLocale} from 'next-intl';
 import {setRequestLocale} from 'next-intl/server';
 import {routing, type Locale} from '@/i18n/routing';
+import {SITE_URL} from '@/lib/site';
 import { getLocalizedBlogBySlug, localizedBlogs } from '../../../../data/blogs';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://thurayatires.com';
 const categoryKeys = {
   'تقنية الإطارات': 'tires',
   'البطاريات والمناخ الحار': 'batteries',
@@ -53,9 +52,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const imageUrl = new URL(blog.image, SITE_URL).toString();
   const title = blog.seoTitle[locale];
   const description = blog.seoDescription[locale];
+  const section = categoryLabels[locale][categoryKeys[blog.type]];
   return {
     title,
     description,
+    keywords: [section, locale === 'en' ? 'vehicle maintenance' : 'صيانة السيارات', 'Mero'],
     alternates: {
       canonical: articleUrl,
       languages: {
@@ -72,8 +73,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: 'Mero',
       locale: locale === 'en' ? 'en_US' : 'ar_SA',
       publishedTime: blog.createdAt,
-      modifiedTime: blog.updatedAt ?? blog.createdAt,
-      section: categoryLabels[locale][categoryKeys[blog.type]],
+      ...(blog.updatedAt ? {modifiedTime: blog.updatedAt} : {}),
+      section,
       images: [{ url: imageUrl, width: 1672, height: 941, alt: blog.imageAlt[locale] }],
     },
     twitter: { card: 'summary_large_image', title, description, images: [imageUrl] },
@@ -102,6 +103,7 @@ export default async function BlogArticlePage({ params }: Props) {
     dateModified: blog.updatedAt ?? blog.createdAt,
     inLanguage: locale,
     articleSection: category,
+    '@id': articleUrl,
     mainEntityOfPage: articleUrl,
     author: { '@type': 'Organization', name: 'Mero', url: SITE_URL },
     publisher: {

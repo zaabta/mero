@@ -5,6 +5,7 @@ import {setRequestLocale} from 'next-intl/server';
 import BlogPage from '../../../components/BlogPage';
 import { localizedBlogs } from '../../../data/blogs';
 import {routing, type Locale} from '@/i18n/routing';
+import {SITE_URL} from '@/lib/site';
 
 const categoryValues = ['all', 'tires', 'batteries', 'oils', 'standards'] as const;
 type Category = (typeof categoryValues)[number];
@@ -56,19 +57,23 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const { locale } = await params;
   const { q, category } = await searchParams;
   if (!hasLocale(routing.locales, locale)) notFound();
-  const filtered = Boolean(normalizeQuery(q) || normalizeCategory(category) !== 'all');
   return {
     title:
-      locale === 'en' ? 'Blog and technical knowledge | Mero' : 'مدونة Mero ومركز المعرفة الفنية',
+      locale === 'en'
+        ? 'Automotive Tips and Technical Blog | Mero'
+        : 'مدونة ميرو | نصائح الإطارات والبطاريات وصيانة السيارات',
     description:
       locale === 'en'
-        ? 'Engineering insights for tires, batteries, oils, and Gulf vehicle maintenance.'
-        : 'تحليلات هندسية وإرشادات صيانة للإطارات والبطاريات والزيوت في ظروف الخليج.',
+        ? 'Explore professional guidance from Mero about tires, batteries, engine oils and vehicle maintenance for hot weather and Saudi driving conditions.'
+        : 'مقالات وإرشادات من ميرو حول الإطارات والبطاريات وزيوت المحركات وصيانة السيارات في الأجواء الحارة وظروف القيادة في السعودية.',
     alternates: {
-      canonical: `/${locale}/blog`,
-      languages: { ar: '/ar/blog', en: '/en/blog', 'x-default': '/ar/blog' },
+      canonical: `${SITE_URL}/${locale}/blog`,
+      languages: {
+        ar: `${SITE_URL}/ar/blog`,
+        en: `${SITE_URL}/en/blog`,
+        'x-default': `${SITE_URL}/ar/blog`
+      },
     },
-    robots: { index: !filtered, follow: true },
   };
 }
 
