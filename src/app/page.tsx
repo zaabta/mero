@@ -20,11 +20,13 @@ import ContactForm from '../components/ContactForm';
 import QuoteButton from '../components/QuoteButton';
 import ContactMapLoader from '../components/contact/ContactMapLoader';
 import BrandGrid from '../components/BrandGrid';
-import {getTranslations} from 'next-intl/server';
-import {permanentRedirect} from 'next/navigation';
-import type {Locale} from '@/i18n/routing';
-import {SITE_URL} from '@/lib/site';
-import {BUSINESS} from '@/lib/business';
+import { getTranslations } from 'next-intl/server';
+import { permanentRedirect } from 'next/navigation';
+import type { Locale } from '@/i18n/routing';
+import { SITE_URL } from '@/lib/site';
+import { BUSINESS } from '@/lib/business';
+import TrackedAnchor from '@/components/TrackedAnchor';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
 const products = [
   {
@@ -133,7 +135,7 @@ function ProductCard({
     </article>
   );
 }
-export async function Home({locale}: {locale: Locale}) {
+export async function Home({ locale }: { locale: Locale }) {
   const english = locale === 'en';
   const t = await getTranslations('home');
   const structuredData = {
@@ -154,7 +156,7 @@ export async function Home({locale}: {locale: Locale}) {
         '@id': `${SITE_URL}/#website`,
         name: BUSINESS.brandName,
         url: SITE_URL,
-        publisher: {'@id': `${SITE_URL}/#organization`},
+        publisher: { '@id': `${SITE_URL}/#organization` },
         inLanguage: BUSINESS.languages,
       },
       {
@@ -164,7 +166,7 @@ export async function Home({locale}: {locale: Locale}) {
         url: `${SITE_URL}/${locale}`,
         image: `${SITE_URL}/images/og/${english ? 'mero-og-image-en.jpg' : 'mero-og-image.jpg'}`,
         logo: BUSINESS.logoUrl,
-        isPartOf: {'@id': `${SITE_URL}/#website`},
+        isPartOf: { '@id': `${SITE_URL}/#website` },
         telephone: BUSINESS.phone,
         email: BUSINESS.email,
         address: {
@@ -193,8 +195,8 @@ export async function Home({locale}: {locale: Locale}) {
         '@type': 'WebPage',
         '@id': `${SITE_URL}/${locale}#webpage`,
         url: `${SITE_URL}/${locale}`,
-        isPartOf: {'@id': `${SITE_URL}/#website`},
-        about: {'@id': `${SITE_URL}/#localbusiness`},
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+        about: { '@id': `${SITE_URL}/#localbusiness` },
         inLanguage: locale,
       },
     ],
@@ -557,9 +559,15 @@ export async function Home({locale}: {locale: Locale}) {
                   <span className="font-arabic font-bold">
                     {english ? 'Direct phone and support' : 'الهاتف المباشر والدعم'}
                   </span>
-                  <a href="tel:0112204999" dir="ltr" className="font-semibold text-gold">
+                  <TrackedAnchor
+                    href="tel:0112204999"
+                    dir="ltr"
+                    className="font-semibold text-gold"
+                    eventName="phone_click"
+                    eventParameters={{ link_location: 'contact', page_language: locale }}
+                  >
                     011 220 4999
-                  </a>
+                  </TrackedAnchor>
                 </div>
               </div>
 
@@ -573,9 +581,15 @@ export async function Home({locale}: {locale: Locale}) {
                   <span className="font-arabic font-bold">
                     {english ? 'Business email' : 'البريد الإلكتروني التجاري'}
                   </span>
-                  <a href="mailto:Thrya.tire@gmail.com" dir="ltr" className="text-muted">
+                  <TrackedAnchor
+                    href="mailto:Thrya.tire@gmail.com"
+                    dir="ltr"
+                    className="text-muted"
+                    eventName="email_click"
+                    eventParameters={{ link_location: 'contact', page_language: locale }}
+                  >
                     Thrya.tire@gmail.com
-                  </a>
+                  </TrackedAnchor>
                 </div>
               </div>
 
@@ -589,32 +603,50 @@ export async function Home({locale}: {locale: Locale}) {
                   <span className="font-arabic font-bold">
                     {english ? 'Main branch' : 'الفرع الرئيسي'}
                   </span>
-                  <a
+                  <TrackedAnchor
                     href="https://www.google.com/maps/search/?api=1&query=Car+Park+Complex+Al+Malaz+Riyadh+Saudi+Arabia"
                     target="_blank"
                     rel="noreferrer"
                     className="text-muted"
+                    eventName="map_open"
+                    eventParameters={{ page_language: locale }}
                   >
                     {english
                       ? 'Riyadh – Al Malaz District – Car Park Complex'
                       : 'الرياض - حي الملز - مجمع كار بارك'}
-                  </a>
-                  <a
+                  </TrackedAnchor>
+                  <TrackedAnchor
                     href="https://www.google.com/maps/search/?api=1&query=Prince+Fahd+bin+Ibrahim+Al+Saud+Street+Riyadh+Saudi+Arabia"
                     target="_blank"
                     rel="noreferrer"
                     className="text-muted"
+                    eventName="map_open"
+                    eventParameters={{ page_language: locale }}
                   >
                     {english
                       ? 'Prince Fahd bin Ibrahim Al Saud Street • Postal Code: 12644'
                       : 'شارع الأمير فهد بن إبراهيم آل سعود • الرمز البريدي: 12644'}
-                  </a>
+                  </TrackedAnchor>
                   <span dir="ltr" className="pt-1 text-xs text-gold">
-                    <a href="tel:0112204999">011 220 4999</a> •{' '}
-                    <a href="mailto:Thrya.tire@gmail.com">Thrya.tire@gmail.com</a>
+                    <TrackedAnchor
+                      href="tel:0112204999"
+                      eventName="phone_click"
+                      eventParameters={{ link_location: 'contact_branch', page_language: locale }}
+                    >
+                      011 220 4999
+                    </TrackedAnchor>{' '}
+                    •{' '}
+                    <TrackedAnchor
+                      href="mailto:Thrya.tire@gmail.com"
+                      eventName="email_click"
+                      eventParameters={{ link_location: 'contact_branch', page_language: locale }}
+                    >
+                      Thrya.tire@gmail.com
+                    </TrackedAnchor>
                   </span>
                 </div>
               </div>
+              <WhatsAppButton locale={locale} location="contact" />
             </div>
           </div>
 

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {Link} from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,8 +13,9 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { LocalizedBlogPost } from '../data/blogs';
-import type {Locale} from '@/i18n/routing';
+import type { Locale } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
+import { trackEvent } from '@/lib/analytics';
 
 type CategoryKey = 'all' | 'tires' | 'batteries' | 'oils' | 'standards';
 
@@ -175,7 +176,17 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
                   {english ? 'FEATURED ARTICLE' : 'مقال مميز'}
                 </span>
                 <h2 className="mt-4 font-arabic text-2xl font-bold leading-tight lg:text-4xl">
-                  <Link href={`/blog/${featured.slug}`} className="hover:text-gold">
+                  <Link
+                    href={`/blog/${featured.slug}`}
+                    className="hover:text-gold"
+                    onClick={() =>
+                      trackEvent('select_content', {
+                        content_type: 'blog_article',
+                        item_id: featured.slug,
+                        page_language: locale,
+                      })
+                    }
+                  >
                     {featured.title[locale]}
                   </Link>
                 </h2>
@@ -203,6 +214,13 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
             <Link
               key={article.slug}
               href={`/blog/${article.slug}`}
+              onClick={() =>
+                trackEvent('select_content', {
+                  content_type: 'blog_article',
+                  item_id: article.slug,
+                  page_language: locale,
+                })
+              }
               className="group overflow-hidden rounded-xl border border-white/10 bg-carbon transition hover:-translate-y-0.5 hover:border-gold/50 motion-reduce:transition-none"
             >
               <div className="relative h-52 overflow-hidden bg-raised">

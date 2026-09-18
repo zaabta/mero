@@ -4,6 +4,7 @@ import { MapPin, Navigation, Phone } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { branches } from '../../data/branches';
+import { trackEvent } from '@/lib/analytics';
 
 const mapboxStyle = 'mapbox://styles/mapbox/dark-v11';
 const mainBranchCoordinates: [number, number] = [46.7291548, 24.6488506];
@@ -78,6 +79,15 @@ export default function MeroMap() {
               <a href="${directions}" target="_blank" rel="noopener noreferrer">${english ? 'Get directions' : 'فتح الاتجاهات'}</a>
             </div>
           `;
+          popupContent.addEventListener('click', (event) => {
+            const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>('a');
+            if (!anchor) return;
+            if (anchor.href.startsWith('tel:')) {
+              trackEvent('phone_click', { link_location: 'map_popup', page_language: locale });
+            } else if (anchor.href.includes('google.com/maps')) {
+              trackEvent('map_open', { page_language: locale });
+            }
+          });
           const popup = new mapboxgl.Popup({
             closeButton: true,
             closeOnClick: true,
@@ -152,7 +162,7 @@ export default function MeroMap() {
       map?.remove();
       mapRef.current = null;
     };
-  }, [english, shouldLoad]);
+  }, [english, locale, shouldLoad]);
 
   const mainBranch = branches[0];
   const directions = `https://www.google.com/maps/dir/?api=1&destination=${mainBranch.latitude},${mainBranch.longitude}`;
@@ -176,11 +186,21 @@ export default function MeroMap() {
           <strong>{english ? mainBranch.name.en : mainBranch.name.ar}</strong>
           <span>{english ? mainBranch.address.en : mainBranch.address.ar}</span>
           <div className="mero-map-fallback-actions">
-            <a href={`tel:${mainBranch.phone.replace(/\s/g, '')}`}>
+            <a
+              href={`tel:${mainBranch.phone.replace(/\s/g, '')}`}
+              onClick={() =>
+                trackEvent('phone_click', { link_location: 'map_fallback', page_language: locale })
+              }
+            >
               <Phone size={15} aria-hidden="true" />
               {english ? 'Call now' : 'اتصل الآن'}
             </a>
-            <a href={directions} target="_blank" rel="noopener noreferrer">
+            <a
+              href={directions}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent('map_open', { page_language: locale })}
+            >
               <Navigation size={15} aria-hidden="true" />
               {english ? 'Get directions' : 'فتح الاتجاهات'}
             </a>

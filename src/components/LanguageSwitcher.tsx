@@ -1,7 +1,7 @@
-'use client'
+'use client';
 import { useLocale } from 'next-intl';
-import {Link, usePathname} from '@/i18n/navigation';
-
+import { Link, usePathname } from '@/i18n/navigation';
+import { trackEvent } from '@/lib/analytics';
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
@@ -21,6 +21,14 @@ export default function LanguageSwitcher() {
             href={pathname}
             locale={item}
             aria-current={locale === item ? 'page' : undefined}
+            onClick={() => {
+              if (item !== locale) {
+                trackEvent('language_change', {
+                  from_language: locale,
+                  to_language: item,
+                });
+              }
+            }}
             className={`min-h-7 min-w-8 rounded px-2 py-1.5 text-center transition ${locale === item ? 'bg-gold text-void' : 'text-muted hover:text-white'}`}
           >
             {item.toUpperCase()}

@@ -1,8 +1,9 @@
 import Logo from './MeroLogo';
-import { useLocale } from 'next-intl';  
+import { useLocale } from 'next-intl';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { BadgeCheck } from 'lucide-react';
-import {Link} from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
+import TrackedAnchor from './TrackedAnchor';
 
 export default function Footer() {
   const currentLocale = useLocale();
@@ -91,9 +92,14 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="shrink-0 text-gold" size={16} />
-                <a href="tel:0112204999" dir="ltr">
+                <TrackedAnchor
+                  href="tel:0112204999"
+                  dir="ltr"
+                  eventName="phone_click"
+                  eventParameters={{ link_location: 'footer', page_language: currentLocale }}
+                >
                   011 220 4999
-                </a>
+                </TrackedAnchor>
               </div>
               <div className="flex items-center gap-2">
                 <span className="shrink-0 text-gold">〒</span>
@@ -101,9 +107,14 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="shrink-0 text-gold" size={16} />
-                <a href="mailto:Thrya.tire@gmail.com" dir="ltr">
+                <TrackedAnchor
+                  href="mailto:Thrya.tire@gmail.com"
+                  dir="ltr"
+                  eventName="email_click"
+                  eventParameters={{ link_location: 'footer', page_language: currentLocale }}
+                >
                   Thrya.tire@gmail.com
-                </a>
+                </TrackedAnchor>
               </div>
             </div>
           </div>
@@ -123,9 +134,17 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="shrink-0 text-gold" size={16} />
-                <a href="mailto:Thrya.tire@gmail.com" dir="ltr">
+                <TrackedAnchor
+                  href="mailto:Thrya.tire@gmail.com"
+                  dir="ltr"
+                  eventName="email_click"
+                  eventParameters={{
+                    link_location: 'footer_business',
+                    page_language: currentLocale,
+                  }}
+                >
                   Thrya.tire@gmail.com
-                </a>
+                </TrackedAnchor>
               </div>
             </div>
           </div>

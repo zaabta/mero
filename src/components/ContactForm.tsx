@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {Link} from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import CustomSelect from './CustomSelect';
 import { useLocale } from 'next-intl';
+import { trackEvent } from '@/lib/analytics';
 
 const productOptions = (english: boolean) => [
   {
@@ -53,6 +54,7 @@ export default function ContactForm() {
       form.reset();
       setProduct('tires');
       setStatus('success');
+      trackEvent('generate_lead', { form_name: 'contact', page_language: locale });
     } catch (submissionError) {
       setStatus('error');
       setError(
