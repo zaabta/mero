@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import type {Branch} from '../../data/branches';
 
 const MeroMap = dynamic(() => import('./MeroMap'), {
   ssr: false,
@@ -11,6 +12,6 @@ const MeroMap = dynamic(() => import('./MeroMap'), {
   ),
 });
 
-export default function ContactMapLoader() {
-  return <MeroMap />;
+export default function ContactMapLoader({branches}: {branches: Branch[]}) {
+  return <MeroMap branches={branches} />;
 }

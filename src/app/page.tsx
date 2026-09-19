@@ -16,20 +16,34 @@ import {
   Wrench,
 } from 'lucide-react';
 import HeroCarousel from '../components/HeroCarousel';
+import type {HeroSlideOverride} from '../components/HeroCarousel';
 import ContactForm from '../components/ContactForm';
 import QuoteButton from '../components/QuoteButton';
 import ContactMapLoader from '../components/contact/ContactMapLoader';
 import BrandGrid from '../components/BrandGrid';
-import { getTranslations } from 'next-intl/server';
 import { permanentRedirect } from 'next/navigation';
 import type { Locale } from '@/i18n/routing';
 import { SITE_URL } from '@/lib/site';
 import { BUSINESS } from '@/lib/business';
 import TrackedAnchor from '@/components/TrackedAnchor';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import {
+  getFallbackSiteSettings,
+  getSanityBrands,
+  getSanityHomepage,
+  getSanityProductCategories,
+  getSanityProducts,
+  getSanitySiteSettings,
+  toBrandCards,
+  type HomepageView,
+  type ProductCardData,
+  type SiteSettingsView,
+} from '@/sanity/lib/queries';
+import {brands as staticBrands} from '@/data/brands';
 
-const products = [
+const staticProducts: ProductCardData[] = [
   {
+    id: 'static-premium-tires',
     title: 'الإطارات الفاخرة',
     titleEn: 'Premium Tires',
     tag: 'المرتبة الأولى',
@@ -38,9 +52,12 @@ const products = [
     desc: 'ثبات فائق، تحكم استثنائي، ومقاومة عالية لدرجات الحرارة على الطرق السريعة والصحراوية.',
     descEn: 'Reliable grip, control, and heat resistance for highways and desert roads.',
     footer: 'عقود توريد وتجزئة',
+    footerEn: 'Wholesale and retail supply',
     detail: 'طلب تسعير',
+    quoteProduct: 'tires',
   },
   {
+    id: 'static-high-performance-batteries',
     title: 'البطاريات عالية الأداء',
     titleEn: 'High-performance batteries',
     tag: 'عالية الطاقة',
@@ -49,9 +66,12 @@ const products = [
     desc: 'طاقة تشغيلية قوية ومستدامة مصممة لظروف المناخ الحار وأقصى درجات التحمل دون انقطاع.',
     descEn: 'Strong, dependable starting power designed for hot climates and demanding conditions.',
     footer: 'ضمان استبدال معتمد',
+    footerEn: 'Certified replacement support',
     detail: 'طلب تسعير',
+    quoteProduct: 'batteries',
   },
   {
+    id: 'static-advanced-engine-oils',
     title: 'زيوت المحركات المتطورة',
     titleEn: 'Advanced engine oils',
     tag: 'تخليقي بالكامل',
@@ -60,9 +80,12 @@ const products = [
     desc: 'حماية متقدمة للمحرك مع تقنيات تخليقية تحافظ على سلاسة الأداء وعمر أطول للمركبة تحت الضغط.',
     descEn: 'Advanced engine protection with synthetic technology for smooth, lasting performance.',
     footer: 'لزوجة 5W-30 / 0W-20',
+    footerEn: '5W-30 / 0W-20 viscosity',
     detail: 'طلب تسعير',
+    quoteProduct: 'oils',
   },
   {
+    id: 'static-filters-and-accessories',
     title: 'الفلاتر والملحقات',
     titleEn: 'Filters and accessories',
     tag: 'كفاءة تنقية %99',
@@ -71,7 +94,9 @@ const products = [
     desc: 'فلاتر هواء وزيت وقطع غيار سريعة التبديل تضمن كفاءة استهلاك الوقود ونقاء المنظومة بالكامل.',
     descEn: 'Air and oil filters plus essential parts for clean, efficient vehicle care.',
     footer: 'مواصفات المصنع الأصلية',
+    footerEn: 'Original manufacturer specifications',
     detail: 'طلب تسعير',
+    quoteProduct: 'filters',
   },
 ];
 
@@ -79,15 +104,15 @@ function ProductCard({
   product,
   english,
 }: {
-  product: (typeof products)[number];
+  product: ProductCardData & {detail?: string};
   english: boolean;
 }) {
   const ProductIcon =
-    product.title === 'الإطارات الفاخرة'
+    product.quoteProduct === 'tires'
       ? CircleDot
-      : product.title === 'البطاريات عالية الأداء'
+      : product.quoteProduct === 'batteries'
         ? BatteryCharging
-        : product.title === 'زيوت المحركات المتطورة'
+        : product.quoteProduct === 'oils'
           ? Gauge
           : Filter;
   return (
@@ -116,18 +141,10 @@ function ProductCard({
           {english ? product.descEn : product.desc}
         </p>
         <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-3 text-xs text-gold">
-          <span className="text-[10px] text-gold">{english ? product.tagEn : product.footer}</span>
+          <span className="text-[10px] text-gold">{english ? product.footerEn : product.footer}</span>
           <QuoteButton
             english={english}
-            product={
-              product.title === 'الإطارات الفاخرة'
-                ? 'tires'
-                : product.title === 'البطاريات عالية الأداء'
-                  ? 'batteries'
-                  : product.title === 'زيوت المحركات المتطورة'
-                    ? 'oils'
-                    : 'filters'
-            }
+            product={product.quoteProduct}
             label={english ? 'Request a quote' : product.detail}
           />
         </div>
@@ -137,24 +154,60 @@ function ProductCard({
 }
 export async function Home({ locale }: { locale: Locale }) {
   const english = locale === 'en';
-  const t = await getTranslations('home');
+  const [sanitySettings, sanityHomepage, sanityCategories, sanityProducts, sanityBrands] =
+    await Promise.all([
+      getSanitySiteSettings(),
+      getSanityHomepage(),
+      getSanityProductCategories(),
+      getSanityProducts(),
+      getSanityBrands(),
+    ]);
+  const settings: SiteSettingsView = sanitySettings ?? getFallbackSiteSettings();
+  const homepage: HomepageView | null = sanityHomepage;
+  const productCards = sanityProducts === null ? staticProducts : sanityProducts;
+  const heroSlides: HeroSlideOverride[] = homepage?.heroSlides ?? [];
+  const productSection = homepage?.productSection ?? {
+    heading: {ar: 'فئات المنتجات المتميزة', en: 'Premium product categories'},
+    body: {ar: 'مجموعة متكاملة من أجود قطع غيار ومستلزمات السيارات المصممة لتحمل ظروف الطريق الخليجية وتأمين رحلات يومية وسريعة بأعلى معايير الرفاهية والأمان.', en: 'A complete selection of automotive products carefully chosen for everyday driving and Gulf roads.'},
+  };
+  const aboutSection = homepage?.aboutSection ?? {
+    heading: {ar: 'أداء يبدأ من التفاصيل', en: 'Performance starts with the details'},
+    body: {ar: '“نلتزم في إطار الثريا (MERO) بتقديم حلول متطورة ترتقي بتجربة قيادتك وتمنحك الثقة التامة والتحكم المطلق في كل منعطف ورحلة.”', en: 'At Mero, we provide advanced solutions that elevate your driving experience and give you confidence and control on every journey.'},
+  };
+  const whySection = homepage?.whyMeroSection ?? {
+    heading: {ar: 'لماذا تختار Mero؟', en: 'Why choose Mero?'},
+    body: {ar: 'نعمل على تقديم تجربة مهنية ومنتجات مختارة تناسب احتياجات السائقين وورش السيارات.', en: 'We offer a professional experience and carefully selected products for drivers and workshops.'},
+  };
+  const brandsSection = homepage?.brandsSection ?? {
+    heading: {ar: 'العلامات التجارية', en: 'Brands'},
+    body: {ar: 'نوفر تشكيلة متنوعة من العلامات التجارية لتلبية احتياجات مختلف المركبات والطرق.', en: 'A diverse selection of automotive brands for different vehicles, roads, and driving needs.'},
+  };
+  const ctaSection = homepage?.ctaSection ?? {
+    heading: {ar: 'تواصل مع خبرائنا اليوم', en: 'Talk to our experts today'},
+    body: {ar: 'يسعدنا استقبال استفساراتكم بخصوص طلبات التوريد، عروض أسعار الجملة، أو الشراكات التجارية في المملكة العربية السعودية.', en: 'We welcome your inquiries about supply requests, wholesale quotations, or commercial partnerships in Saudi Arabia.'},
+  };
+  void sanityCategories;
+  const brandCards =
+    sanityBrands === null
+      ? staticBrands.map((brand) => ({...brand, altAr: brand.alt, altEn: brand.alt}))
+      : toBrandCards(sanityBrands);
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'Organization',
         '@id': `${SITE_URL}/#organization`,
-        name: english ? BUSINESS.legalNameEn : BUSINESS.legalNameAr,
-        alternateName: BUSINESS.brandName,
+        name: english ? settings.legalNameEn : settings.legalNameAr,
+        alternateName: settings.brandName,
         url: SITE_URL,
-        logo: BUSINESS.logoUrl,
-        email: BUSINESS.email,
-        telephone: BUSINESS.phone,
+        logo: settings.logoUrl,
+        email: settings.email,
+        telephone: settings.phone,
       },
       {
         '@type': 'WebSite',
         '@id': `${SITE_URL}/#website`,
-        name: BUSINESS.brandName,
+        name: settings.brandName,
         url: SITE_URL,
         publisher: { '@id': `${SITE_URL}/#organization` },
         inLanguage: BUSINESS.languages,
@@ -162,31 +215,31 @@ export async function Home({ locale }: { locale: Locale }) {
       {
         '@type': 'AutoPartsStore',
         '@id': `${SITE_URL}/#localbusiness`,
-        name: `${BUSINESS.brandName} | ${english ? BUSINESS.legalNameEn : BUSINESS.legalNameAr}`,
+        name: `${settings.brandName} | ${english ? settings.legalNameEn : settings.legalNameAr}`,
         url: `${SITE_URL}/${locale}`,
         image: `${SITE_URL}/images/og/${english ? 'mero-og-image-en.jpg' : 'mero-og-image.jpg'}`,
-        logo: BUSINESS.logoUrl,
+        logo: settings.logoUrl,
         isPartOf: { '@id': `${SITE_URL}/#website` },
-        telephone: BUSINESS.phone,
-        email: BUSINESS.email,
+        telephone: settings.phone,
+        email: settings.email,
         address: {
           '@type': 'PostalAddress',
-          streetAddress: english ? BUSINESS.streetAddressEn : BUSINESS.streetAddressAr,
+          streetAddress: english ? settings.addressEn : settings.addressAr,
           addressLocality: english ? BUSINESS.cityEn : BUSINESS.cityAr,
           postalCode: BUSINESS.postalCode,
           addressCountry: BUSINESS.countryCode,
         },
         geo: {
           '@type': 'GeoCoordinates',
-          latitude: BUSINESS.latitude,
-          longitude: BUSINESS.longitude,
+          latitude: settings.latitude,
+          longitude: settings.longitude,
         },
-        hasMap: BUSINESS.mapUrl,
+        hasMap: settings.mapUrl,
         areaServed: BUSINESS.serviceArea,
         availableLanguage: BUSINESS.languages,
         contactPoint: {
           '@type': 'ContactPoint',
-          telephone: BUSINESS.whatsapp,
+          telephone: settings.whatsapp,
           contactType: 'customer service',
           availableLanguage: BUSINESS.languages,
         },
@@ -201,13 +254,13 @@ export async function Home({ locale }: { locale: Locale }) {
       },
     ],
   };
-  return (
+    return (
     <main dir={english ? 'ltr' : 'rtl'}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <HeroCarousel />
+      <HeroCarousel slides={heroSlides} />
       <section
         dir={english ? 'ltr' : 'rtl'}
         className="w-full overflow-hidden border-b border-white/10 bg-[#1b1c1e] py-4 shadow-inner"
@@ -269,12 +322,10 @@ export async function Home({ locale }: { locale: Locale }) {
                 {english ? 'ENGINEERED PRODUCT RANGE' : 'تشكيلة المنتجات الهندسية'}
               </p>
               <h2 className="font-arabic text-3xl font-bold">
-                {english ? 'Premium product categories' : 'فئات المنتجات المتميزة'}
+                {english ? productSection.heading.en : productSection.heading.ar}
               </h2>
               <p className="mt-3 max-w-2xl text-xs leading-6 text-muted">
-                {english
-                  ? 'A complete selection of automotive products carefully chosen for everyday driving and Gulf roads.'
-                  : 'مجموعة متكاملة من أجود قطع غيار ومستلزمات السيارات المصممة لتحمل ظروف الطريق الخليجية وتأمين رحلات يومية وسريعة بأعلى معايير الرفاهية والأمان.'}
+                {english ? productSection.body.en : productSection.body.ar}
               </p>
             </div>
             <span className="hidden text-[10px] text-muted sm:block">
@@ -282,7 +333,7 @@ export async function Home({ locale }: { locale: Locale }) {
             </span>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product) => (
+            {productCards.map((product) => (
               <ProductCard key={product.title} product={product} english={english} />
             ))}
           </div>
@@ -315,12 +366,10 @@ export async function Home({ locale }: { locale: Locale }) {
                 {english ? 'SUPERIOR DURABILITY • GCC ROADS' : 'هندسة التحمل الفائق • GCC ROADS'}
               </p>
               <h2 className="font-arabic text-3xl font-bold">
-                {english ? 'Performance starts with the details' : 'أداء يبدأ من التفاصيل'}
+                {english ? aboutSection.heading.en : aboutSection.heading.ar}
               </h2>
               <p className="mt-4 text-base leading-8 text-muted">
-                {english
-                  ? 'At Mero, we provide advanced solutions that elevate your driving experience and give you confidence and control on every journey.'
-                  : '“نلتزم في إطار الثريا (MERO) بتقديم حلول متطورة ترتقي بتجربة قيادتك وتمنحك الثقة التامة والتحكم المطلق في كل منعطف ورحلة.”'}
+                  {english ? aboutSection.body.en : aboutSection.body.ar}
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4 text-sm text-white/75">
                 <span className="inline-flex items-center gap-2">
@@ -343,24 +392,24 @@ export async function Home({ locale }: { locale: Locale }) {
       <section id="brands" className="py-16 lg:py-20">
         <div className="container text-center">
           <p className="label text-gold">{english ? 'BRANDS' : 'العلامات التجارية'}</p>
-          <h2 className="mt-3 font-arabic text-3xl font-bold">{t('brandsTitle')}</h2>
+          <h2 className="mt-3 font-arabic text-3xl font-bold">
+            {english ? brandsSection.heading.en : brandsSection.heading.ar}
+          </h2>
           <div className="mx-auto mt-3 h-px w-16 bg-gold" />
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted">
-            {t('brandsDescription')}
+            {english ? brandsSection.body.en : brandsSection.body.ar}
           </p>
-          <BrandGrid />
+          <BrandGrid brands={brandCards} />
         </div>
       </section>
       <section id="why-mero" className="py-20">
         <div className="container text-center">
           <p className="label text-gold">{english ? 'OUR DIFFERENCE' : 'معايير التميز'}</p>
           <h2 className="mt-3 font-arabic text-3xl font-bold">
-            {english ? 'Why choose Mero?' : 'لماذا تختار Mero؟'}
+            {english ? whySection.heading.en : whySection.heading.ar}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-muted">
-            {english
-              ? 'We offer a professional experience and carefully selected products for drivers and workshops.'
-              : 'نعمل على تقديم تجربة مهنية ومنتجات مختارة تناسب احتياجات السائقين وورش السيارات.'}
+            {english ? whySection.body.en : whySection.body.ar}
           </p>
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="card p-6">
@@ -539,12 +588,10 @@ export async function Home({ locale }: { locale: Locale }) {
                 {english ? 'CONTACT & SUPPLY CENTER' : 'مركز التواصل والتوريد'}
               </span>
               <h2 className="font-arabic text-3xl font-bold leading-tight lg:text-4xl">
-                {english ? 'Talk to our experts today' : 'تواصل مع خبرائنا اليوم'}
+                {english ? ctaSection.heading.en : ctaSection.heading.ar}
               </h2>
               <p className="text-sm leading-8 text-muted">
-                {english
-                  ? 'We welcome your inquiries about supply requests, wholesale quotations, or commercial partnerships in Saudi Arabia.'
-                  : 'يسعدنا استقبال استفساراتكم بخصوص طلبات التوريد، عروض أسعار الجملة، أو الشراكات التجارية في المملكة العربية السعودية.'}
+                {english ? ctaSection.body.en : ctaSection.body.ar}
               </p>
             </div>
 
@@ -560,13 +607,13 @@ export async function Home({ locale }: { locale: Locale }) {
                     {english ? 'Direct phone and support' : 'الهاتف المباشر والدعم'}
                   </span>
                   <TrackedAnchor
-                    href="tel:0112204999"
+                    href={`tel:${settings.phoneLocal.replace(/\s/g, '')}`}
                     dir="ltr"
                     className="font-semibold text-gold"
                     eventName="phone_click"
                     eventParameters={{ link_location: 'contact', page_language: locale }}
                   >
-                    011 220 4999
+                    {settings.phoneLocal}
                   </TrackedAnchor>
                 </div>
               </div>
@@ -582,13 +629,13 @@ export async function Home({ locale }: { locale: Locale }) {
                     {english ? 'Business email' : 'البريد الإلكتروني التجاري'}
                   </span>
                   <TrackedAnchor
-                    href="mailto:Thrya.tire@gmail.com"
+                    href={`mailto:${settings.email}`}
                     dir="ltr"
                     className="text-muted"
                     eventName="email_click"
                     eventParameters={{ link_location: 'contact', page_language: locale }}
                   >
-                    Thrya.tire@gmail.com
+                    {settings.email}
                   </TrackedAnchor>
                 </div>
               </div>
@@ -604,7 +651,7 @@ export async function Home({ locale }: { locale: Locale }) {
                     {english ? 'Main branch' : 'الفرع الرئيسي'}
                   </span>
                   <TrackedAnchor
-                    href="https://www.google.com/maps/search/?api=1&query=Car+Park+Complex+Al+Malaz+Riyadh+Saudi+Arabia"
+                    href={settings.mapUrl}
                     target="_blank"
                     rel="noreferrer"
                     className="text-muted"
@@ -612,11 +659,11 @@ export async function Home({ locale }: { locale: Locale }) {
                     eventParameters={{ page_language: locale }}
                   >
                     {english
-                      ? 'Riyadh – Al Malaz District – Car Park Complex'
-                      : 'الرياض - حي الملز - مجمع كار بارك'}
+                      ? settings.addressEn
+                      : settings.addressAr}
                   </TrackedAnchor>
                   <TrackedAnchor
-                    href="https://www.google.com/maps/search/?api=1&query=Prince+Fahd+bin+Ibrahim+Al+Saud+Street+Riyadh+Saudi+Arabia"
+                    href={settings.mapUrl}
                     target="_blank"
                     rel="noreferrer"
                     className="text-muted"
@@ -624,29 +671,29 @@ export async function Home({ locale }: { locale: Locale }) {
                     eventParameters={{ page_language: locale }}
                   >
                     {english
-                      ? 'Prince Fahd bin Ibrahim Al Saud Street • Postal Code: 12644'
-                      : 'شارع الأمير فهد بن إبراهيم آل سعود • الرمز البريدي: 12644'}
+                      ? settings.addressEn
+                      : settings.addressAr}
                   </TrackedAnchor>
                   <span dir="ltr" className="pt-1 text-xs text-gold">
                     <TrackedAnchor
-                      href="tel:0112204999"
+                      href={`tel:${settings.phoneLocal.replace(/\s/g, '')}`}
                       eventName="phone_click"
                       eventParameters={{ link_location: 'contact_branch', page_language: locale }}
                     >
-                      011 220 4999
+                      {settings.phoneLocal}
                     </TrackedAnchor>{' '}
                     •{' '}
                     <TrackedAnchor
-                      href="mailto:Thrya.tire@gmail.com"
+                      href={`mailto:${settings.email}`}
                       eventName="email_click"
                       eventParameters={{ link_location: 'contact_branch', page_language: locale }}
                     >
-                      Thrya.tire@gmail.com
+                      {settings.email}
                     </TrackedAnchor>
                   </span>
                 </div>
               </div>
-              <WhatsAppButton locale={locale} location="contact" />
+              <WhatsAppButton locale={locale} location="contact" whatsapp={settings.whatsapp} />
             </div>
           </div>
 
@@ -665,7 +712,7 @@ export async function Home({ locale }: { locale: Locale }) {
           </div>
         </div>
         <div className="container pt-10">
-          <ContactMapLoader />
+          <ContactMapLoader branches={[settings.branch]} />
         </div>
       </section>
     </main>

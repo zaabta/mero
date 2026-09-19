@@ -5,7 +5,7 @@ import { BatteryCharging, Droplets, Gauge } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
 
-const slides = [
+const defaultSlides = [
   {
     image: '/images/hero-tire-ar.png',
     imageLtr: '/images/hero-tire-ltr.png',
@@ -50,18 +50,40 @@ const slides = [
   },
 ];
 
+export type HeroSlideOverride = {
+  imageAr: string;
+  imageEn: string;
+  mobileImageAr: string;
+  mobileImageEn: string;
+  altAr: string;
+  altEn: string;
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+  buttonAr: string;
+  buttonEn: string;
+};
+
+type HeroSlide = (typeof defaultSlides)[number] & {
+  imageMobileLtr?: string;
+  titleEn?: string;
+  descriptionEn?: string;
+  ctaEn?: string;
+};
+
 function ResponsiveHeroImage({
   slide,
   english,
   priority,
 }: {
-  slide: (typeof slides)[number];
+  slide: HeroSlide;
   english: boolean;
   priority: boolean;
 }) {
   const alt = english ? slide.altEn : slide.alt;
   const mobileImage = getImageProps({
-    src: slide.imageMobile,
+    src: english ? (slide.imageMobileLtr ?? slide.imageMobile) : slide.imageMobile,
     alt,
     width: 1448,
     height: 1086,
@@ -88,7 +110,26 @@ function ResponsiveHeroImage({
   );
 }
 
-export default function HeroCarousel() {
+export default function HeroCarousel({slides: overrides}: {slides?: HeroSlideOverride[]}) {
+  const slides: HeroSlide[] = defaultSlides.map((slide, index) => {
+    const override = overrides?.[index];
+    if (!override) return slide;
+    return {
+      ...slide,
+      image: override.imageAr || slide.image,
+      imageLtr: override.imageEn || slide.imageLtr,
+      imageMobile: override.mobileImageAr || slide.imageMobile,
+      imageMobileLtr: override.mobileImageEn || slide.imageMobile,
+      alt: override.altAr || slide.alt,
+      altEn: override.altEn || slide.altEn,
+      title: override.titleAr || slide.title,
+      titleEn: override.titleEn || slide.title,
+      description: override.descriptionAr || slide.description,
+      descriptionEn: override.descriptionEn || slide.description,
+      cta: override.buttonAr || slide.cta,
+      ctaEn: override.buttonEn || slide.cta,
+    };
+  });
   const [active, setActive] = useState(0);
   const current = slides[active];
   const locale = useLocale();
@@ -97,28 +138,26 @@ export default function HeroCarousel() {
     ? [
         {
           eyebrow: 'Premium tire engineering for every road',
-          title: 'High-quality tires',
+          title: current.titleEn ?? 'High-quality tires',
           accent: 'For a safer journey',
-          description:
-            'Reliable grip and control, with everything your vehicle needs in one place.',
-          cta: 'Explore tires',
+          description: current.descriptionEn ?? 'Reliable grip and control, with everything your vehicle needs in one place.',
+          cta: current.ctaEn ?? 'Explore tires',
           meta: ['Verified support', 'Trusted supplier'],
         },
         {
           eyebrow: 'Sustainable power • High cranking power',
-          title: 'High-performance batteries',
+          title: current.titleEn ?? 'High-performance batteries',
           accent: 'Built for demanding conditions',
-          description:
-            'Instant starting power designed for high temperatures and everyday confidence.',
-          cta: 'Explore batteries',
+          description: current.descriptionEn ?? 'Instant starting power designed for high temperatures and everyday confidence.',
+          cta: current.ctaEn ?? 'Explore batteries',
           meta: ['Comprehensive support', 'Fast replacement'],
         },
         {
           eyebrow: 'Full synthetic oils • 5W-30 / 10W-40',
-          title: 'Advanced engine oils',
+          title: current.titleEn ?? 'Advanced engine oils',
           accent: 'And essential parts',
-          description: 'Carefully selected oils and filters for consistent engine care.',
-          cta: 'Explore oils and filters',
+          description: current.descriptionEn ?? 'Carefully selected oils and filters for consistent engine care.',
+          cta: current.ctaEn ?? 'Explore oils and filters',
           meta: ['Engine protection', 'Complete range'],
         },
       ][active]
@@ -127,7 +166,7 @@ export default function HeroCarousel() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timer = window.setInterval(() => setActive((value) => (value + 1) % slides.length), 5000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [slides.length]);
   return (
     <section
       id="top"

@@ -1,5 +1,6 @@
+import Image from 'next/image';
 import type {Locale} from '@/i18n/routing';
-import { useLocale } from 'next-intl';
+import type {SanityCertificationView} from '@/sanity/lib/queries';
 
 type Section = { title: string; paragraphs?: string[]; bullets?: string[] };
 
@@ -216,8 +217,13 @@ const sections: Record<Locale, Section[]> = {
   ],
 };
 
-export default function CertificationsPage() {
-  const locale = useLocale() as Locale;
+export default function CertificationsPage({
+  locale,
+  certifications,
+}: {
+  locale: Locale;
+  certifications: SanityCertificationView[] | null;
+}) {
   const english = locale === 'en';
 
   return (
@@ -232,23 +238,53 @@ export default function CertificationsPage() {
             ? 'Verified product quality and conformity practices'
             : 'ممارسات موثوقة لجودة المنتجات ومطابقتها'}
         </p>
-        <div className="mt-8 space-y-8 text-sm leading-8 text-muted">
-          {sections[locale].map((section) => (
-            <section key={section.title}>
-              <h2 className="mb-2 text-lg font-bold text-white">{section.title}</h2>
-              {section.paragraphs?.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-              {section.bullets && (
-                <ul className="mt-2 list-disc space-y-1 ps-5">
-                  {section.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          ))}
-        </div>
+        {certifications === null ? (
+          <div className="mt-8 space-y-8 text-sm leading-8 text-muted">
+            {sections[locale].map((section) => (
+              <section key={section.title}>
+                <h2 className="mb-2 text-lg font-bold text-white">{section.title}</h2>
+                {section.paragraphs?.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+                {section.bullets && (
+                  <ul className="mt-2 list-disc space-y-1 ps-5">
+                    {section.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            ))}
+          </div>
+        ) : certifications.length === 0 ? (
+          <p className="mt-8 rounded-lg border border-white/10 bg-carbon p-6 text-sm leading-8 text-muted" role="status">
+            {english
+              ? 'No certification records are currently available.'
+              : 'لا توجد شهادات منشورة حاليًا.'}
+          </p>
+        ) : (
+          <div className="mt-8 space-y-6 text-sm leading-8 text-muted">
+            {certifications.map((certification) => (
+              <section key={certification.id} className="rounded-lg border border-white/10 bg-carbon p-6">
+                {certification.images[0] ? (
+                  <Image
+                    src={certification.images[0].url}
+                    alt={english ? certification.images[0].altEn : certification.images[0].altAr}
+                    width={1200}
+                    height={800}
+                    sizes="(max-width: 767px) 100vw, 768px"
+                    className="mb-5 h-auto max-h-80 w-full rounded-md object-contain"
+                  />
+                ) : null}
+                <h2 className="text-lg font-bold text-white">
+                  {english ? certification.title.en : certification.title.ar}
+                </h2>
+                <p className="mt-2">{english ? certification.description.en : certification.description.ar}</p>
+                <p className="mt-3 text-xs text-gold">{certification.issuingOrganization}</p>
+              </section>
+            ))}
+          </div>
+        )}
       </article>
     </main>
   );

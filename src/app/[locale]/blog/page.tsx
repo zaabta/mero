@@ -7,6 +7,7 @@ import { localizedBlogs } from '../../../data/blogs';
 import {routing, type Locale} from '@/i18n/routing';
 import {SITE_URL} from '@/lib/site';
 import {BUSINESS} from '@/lib/business';
+import {getSanityBlogPosts, toLocalizedBlogPost} from '@/sanity/lib/queries';
 
 const categoryValues = ['all', 'tires', 'batteries', 'oils', 'standards'] as const;
 type Category = (typeof categoryValues)[number];
@@ -88,7 +89,19 @@ export default async function LocaleBlogPage({ params, searchParams }: Props) {
   const query = normalizeQuery(rawQuery);
   const selectedCategory = normalizeCategory(rawCategory);
   const searchText = query.toLocaleLowerCase(locale === 'en' ? 'en-US' : 'ar');
-  const articles = localizedBlogs.filter((article) => {
+  const sanityPosts = await getSanityBlogPosts();
+  const sanityArticles = sanityPosts?.map(toLocalizedBlogPost) ?? [];
+  const sanityBySlug = new Map(sanityArticles.map((article) => [article.slug, article]));
+  const sourceArticles =
+    sanityPosts === null
+      ? localizedBlogs
+      : sanityPosts.length === 0
+        ? []
+      : [
+          ...localizedBlogs.map((article) => sanityBySlug.get(article.slug) ?? article),
+          ...sanityArticles.filter((article) => !localizedBlogs.some((item) => item.slug === article.slug)),
+        ];
+  const articles = sourceArticles.filter((article) => {
     const categoryMatch =
       selectedCategory === 'all' || categoryMap[selectedCategory] === article.type;
     const articleCategory = categoryKeyByName[article.type];

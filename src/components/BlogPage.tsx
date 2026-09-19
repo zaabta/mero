@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
+import BlogArticleLink from './BlogArticleLink';
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,8 +15,6 @@ import {
 } from 'lucide-react';
 import type { LocalizedBlogPost } from '../data/blogs';
 import type { Locale } from '@/i18n/routing';
-import { useLocale } from 'next-intl';
-import { trackEvent } from '@/lib/analytics';
 
 type CategoryKey = 'all' | 'tires' | 'batteries' | 'oils' | 'standards';
 
@@ -74,8 +73,7 @@ type Props = {
   selectedCategory: CategoryKey;
 };
 
-export default function BlogPage({ articles, query, selectedCategory }: Props) {
-  const locale = useLocale() as Locale;
+export default function BlogPage({ articles, query, selectedCategory, locale }: Props) {
   const english = locale === 'en';
   const labels = categoryLabels[locale];
   const featured = articles[0];
@@ -176,19 +174,14 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
                   {english ? 'FEATURED ARTICLE' : 'مقال مميز'}
                 </span>
                 <h2 className="mt-4 font-arabic text-2xl font-bold leading-tight lg:text-4xl">
-                  <Link
+                  <BlogArticleLink
                     href={`/blog/${featured.slug}`}
+                    slug={featured.slug}
+                    locale={locale}
                     className="hover:text-gold"
-                    onClick={() =>
-                      trackEvent('select_content', {
-                        content_type: 'blog_article',
-                        item_id: featured.slug,
-                        page_language: locale,
-                      })
-                    }
                   >
                     {featured.title[locale]}
-                  </Link>
+                  </BlogArticleLink>
                 </h2>
                 <p className="mt-4 text-sm leading-8 text-muted">{featured.description[locale]}</p>
               </div>
@@ -211,16 +204,11 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {articles.slice(1).map((article) => (
-            <Link
+            <BlogArticleLink
               key={article.slug}
               href={`/blog/${article.slug}`}
-              onClick={() =>
-                trackEvent('select_content', {
-                  content_type: 'blog_article',
-                  item_id: article.slug,
-                  page_language: locale,
-                })
-              }
+              slug={article.slug}
+              locale={locale}
               className="group overflow-hidden rounded-xl border border-white/10 bg-carbon transition hover:-translate-y-0.5 hover:border-gold/50 motion-reduce:transition-none"
             >
               <div className="relative h-52 overflow-hidden bg-raised">
@@ -250,7 +238,7 @@ export default function BlogPage({ articles, query, selectedCategory }: Props) {
                   </time>
                 </div>
               </div>
-            </Link>
+            </BlogArticleLink>
           ))}
         </div>
         <Link

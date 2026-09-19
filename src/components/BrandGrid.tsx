@@ -2,12 +2,15 @@
 
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import {useLocale} from 'next-intl';
 import { useState } from 'react';
-import { brands } from '../data/brands';
+import type {BrandCard} from '@/sanity/lib/queries';
 
-export default function BrandGrid() {
+export default function BrandGrid({brands}: {brands: BrandCard[]}) {
   const [expanded, setExpanded] = useState(false);
   const t = useTranslations('home');
+  const locale = useLocale();
+  const english = locale === 'en';
   return (
     <>
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
@@ -18,7 +21,7 @@ export default function BrandGrid() {
           >
             <Image
               src={brand.logo}
-              alt={brand.alt}
+              alt={english ? brand.altEn : brand.altAr}
               width={720}
               height={240}
               sizes="(max-width: 639px) 45vw, (max-width: 767px) 30vw, (max-width: 1023px) 23vw, 15vw"

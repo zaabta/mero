@@ -5,19 +5,18 @@ import type { Locale } from '@/i18n/routing';
 import { trackEvent } from '@/lib/analytics';
 import { BUSINESS } from '@/lib/business';
 
-const whatsappNumber = BUSINESS.whatsapp.replace(/\D/g, '');
-
 type Props = {
   locale: Locale;
   location: 'floating' | 'contact';
+  whatsapp?: string;
 };
 
-export default function WhatsAppButton({ locale, location }: Props) {
+export default function WhatsAppButton({ locale, location, whatsapp }: Props) {
   const english = locale === 'en';
   const message = english
     ? 'Hello, I would like to inquire about Mero products and services.'
     : 'مرحبًا، أريد الاستفسار عن منتجات وخدمات ميرو.';
-  const href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  const href = `https://wa.me/${(whatsapp ?? BUSINESS.whatsapp).replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
 
   return (
     <a

@@ -4,8 +4,9 @@ import { Mail, MapPin, Phone } from 'lucide-react';
 import { BadgeCheck } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import TrackedAnchor from './TrackedAnchor';
+import type {SiteSettingsView} from '@/sanity/lib/queries';
 
-export default function Footer() {
+export default function Footer({settings}: {settings?: SiteSettingsView}) {
   const currentLocale = useLocale();
   const english = currentLocale === 'en';
   return (
@@ -19,7 +20,7 @@ export default function Footer() {
             dir={english ? 'ltr' : 'rtl'}
             className={`flex flex-col items-start gap-4 lg:col-span-4 ${english ? 'text-left' : 'text-right'}`}
           >
-            <Logo large />
+            <Logo large settings={settings} />
             <span className="text-[11px] text-muted">
               {english
                 ? 'AL THURAYA TIRES AUTO SERVICES CO. • Wholesale & Retail Tires Trading'
@@ -33,7 +34,7 @@ export default function Footer() {
               dir={english ? 'ltr' : 'rtl'}
               className={`w-full max-w-md text-sm leading-7 text-muted ${english ? 'text-left' : 'text-right'}`}
             >
-              {english
+              {settings ? (english ? settings.footerText.en : settings.footerText.ar) : english
                 ? 'A trusted reference for tire solutions and premium automotive engineering services across Saudi Arabia.'
                 : 'المرجع الرائد في حلول الإطارات وخدمات هندسة السيارات الفاخرة في المملكة العربية السعودية.'}
             </p>
@@ -86,19 +87,19 @@ export default function Footer() {
                 <MapPin className="mt-1 shrink-0 text-gold" size={16} />
                 <span>
                   {english
-                    ? 'Riyadh – Al Malaz District – Car Park Complex – Prince Fahd bin Ibrahim Al Saud Street'
-                    : 'الرياض - حي الملز - مجمع كار بارك - شارع الأمير فهد بن إبراهيم آل سعود'}
+                    ? settings?.addressEn ?? 'Riyadh – Al Malaz District – Car Park Complex – Prince Fahd bin Ibrahim Al Saud Street'
+                    : settings?.addressAr ?? 'الرياض - حي الملز - مجمع كار بارك - شارع الأمير فهد بن إبراهيم آل سعود'}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="shrink-0 text-gold" size={16} />
                 <TrackedAnchor
-                  href="tel:0112204999"
+                  href={`tel:${(settings?.phoneLocal ?? '011 220 4999').replace(/\s/g, '')}`}
                   dir="ltr"
                   eventName="phone_click"
                   eventParameters={{ link_location: 'footer', page_language: currentLocale }}
                 >
-                  011 220 4999
+                  {settings?.phoneLocal ?? '011 220 4999'}
                 </TrackedAnchor>
               </div>
               <div className="flex items-center gap-2">
@@ -108,12 +109,12 @@ export default function Footer() {
               <div className="flex items-center gap-2">
                 <Mail className="shrink-0 text-gold" size={16} />
                 <TrackedAnchor
-                  href="mailto:Thrya.tire@gmail.com"
+                  href={`mailto:${settings?.email ?? 'Thrya.tire@gmail.com'}`}
                   dir="ltr"
                   eventName="email_click"
                   eventParameters={{ link_location: 'footer', page_language: currentLocale }}
                 >
-                  Thrya.tire@gmail.com
+                  {settings?.email ?? 'Thrya.tire@gmail.com'}
                 </TrackedAnchor>
               </div>
             </div>
@@ -135,7 +136,7 @@ export default function Footer() {
               <div className="flex items-center gap-2">
                 <Mail className="shrink-0 text-gold" size={16} />
                 <TrackedAnchor
-                  href="mailto:Thrya.tire@gmail.com"
+                  href={`mailto:${settings?.email ?? 'Thrya.tire@gmail.com'}`}
                   dir="ltr"
                   eventName="email_click"
                   eventParameters={{
@@ -143,7 +144,7 @@ export default function Footer() {
                     page_language: currentLocale,
                   }}
                 >
-                  Thrya.tire@gmail.com
+                  {settings?.email ?? 'Thrya.tire@gmail.com'}
                 </TrackedAnchor>
               </div>
             </div>

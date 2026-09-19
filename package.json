@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
+    "sanity:migrate:dry": "tsx scripts/migrate-to-sanity.ts",
+    "sanity:migrate": "tsx scripts/migrate-to-sanity.ts --write",
+    "sanity:rekey:dry": "tsx scripts/rekey-sanity-documents.ts",
+    "sanity:rekey": "tsx scripts/rekey-sanity-documents.ts --write",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -12,12 +16,18 @@
   },
   "dependencies": {
     "@next/third-parties": "^16.3.5",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^5.31.2",
+    "@sanity/webhook": "^4.0.4",
     "lucide-react": "^0.468.0",
     "mapbox-gl": "^3.30.0",
     "next": "latest",
     "next-intl": "^4.14.5",
+    "next-sanity": "^13.3.4",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "sanity": "^5.31.2",
+    "styled-components": "^6.5.3"
   },
   "devDependencies": {
     "@types/node": "latest",
@@ -29,6 +39,7 @@
     "postcss": "latest",
     "prettier": "latest",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.13",
     "typescript": "latest"
   }
 }

@@ -1,5 +1,6 @@
 import type {Locale} from '@/i18n/routing';
-import { useLocale } from 'next-intl';
+import {PortableText} from 'next-sanity';
+import type {PortableTextBlock, SanityLegalPageView} from '@/sanity/lib/queries';
 
 type LegalSection = { title: string; paragraphs?: string[]; bullets?: string[] };
 
@@ -458,42 +459,65 @@ const termsSections: Record<Locale, LegalSection[]> = {
   ],
 };
 
-export default function LegalPage({ type }: { type: 'privacy' | 'terms' }) {
-  const locale = useLocale() as Locale;
+export default function LegalPage({
+  type,
+  locale,
+  sanityPage,
+}: {
+  type: 'privacy' | 'terms';
+  locale: Locale;
+  sanityPage: SanityLegalPageView | null;
+}) {
   const english = locale === 'en';
   const privacy = type === 'privacy';
+  const title = sanityPage?.title[locale] ?? (privacy
+    ? english
+      ? 'Privacy policy'
+      : 'سياسة الخصوصية'
+    : english
+      ? 'Terms and conditions'
+      : 'الشروط والأحكام');
+  const updatedDate = sanityPage?.lastUpdated ?? '2026-09-18';
   return (
     <main dir={english ? 'ltr' : 'rtl'} className="min-h-screen bg-void text-white">
       <article className="container max-w-3xl py-16 lg:py-24">
         <p className="label text-gold">MERO</p>
         <h1 className="mt-3 font-arabic text-3xl font-bold lg:text-5xl">
-          {privacy
-            ? english
-              ? 'Privacy policy'
-              : 'سياسة الخصوصية'
-            : english
-              ? 'Terms and conditions'
-              : 'الشروط والأحكام'}
+          {title}
         </h1>
         <p className="mt-3 text-sm text-muted">
-          {english ? 'Last updated: September 18, 2026' : 'آخر تحديث: 18 سبتمبر 2026'}
+          {english ? `Last updated: ${updatedDate}` : `آخر تحديث: ${updatedDate}`}
         </p>
         <div className="mt-8 space-y-8 text-sm leading-8 text-muted">
-          {(privacy ? privacySections[locale] : termsSections[locale]).map((section) => (
-            <section key={section.title}>
-              <h2 className="mb-2 text-lg font-bold text-white">{section.title}</h2>
-              {section.paragraphs?.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-              {section.bullets && (
-                <ul className="mt-2 list-disc space-y-1 ps-5">
-                  {section.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          ))}
+          {sanityPage ? (
+            <PortableText
+              value={sanityPage.content[locale] as PortableTextBlock[]}
+              components={{
+                block: {
+                  h2: ({children}) => <h2 className="pt-5 text-lg font-bold text-white">{children}</h2>,
+                  normal: ({children}) => <p>{children}</p>,
+                },
+                list: {bullet: ({children}) => <ul className="mt-2 list-disc space-y-1 ps-5">{children}</ul>},
+                listItem: {bullet: ({children}) => <li>{children}</li>},
+              }}
+            />
+          ) : (
+            (privacy ? privacySections[locale] : termsSections[locale]).map((section) => (
+              <section key={section.title}>
+                <h2 className="mb-2 text-lg font-bold text-white">{section.title}</h2>
+                {section.paragraphs?.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+                {section.bullets && (
+                  <ul className="mt-2 list-disc space-y-1 ps-5">
+                    {section.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            ))
+          )}
         </div>
       </article>
     </main>

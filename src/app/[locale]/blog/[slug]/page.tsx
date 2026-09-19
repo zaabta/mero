@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import {PortableText} from 'next-sanity';
 import {Link} from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import {hasLocale} from 'next-intl';
@@ -8,6 +9,7 @@ import {routing, type Locale} from '@/i18n/routing';
 import {SITE_URL} from '@/lib/site';
 import {BUSINESS} from '@/lib/business';
 import { getLocalizedBlogBySlug, localizedBlogs } from '../../../../data/blogs';
+import {getSanityBlogPostBySlug, toLocalizedBlogPost, type PortableTextBlock} from '@/sanity/lib/queries';
 const categoryKeys = {
   'تقنية الإطارات': 'tires',
   'البطاريات والمناخ الحار': 'batteries',
@@ -46,7 +48,10 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
-  const blog = getLocalizedBlogBySlug(slug);
+  const sanityPost = await getSanityBlogPostBySlug(slug);
+  const staticBlog = getLocalizedBlogBySlug(slug);
+  const mappedSanityBlog = sanityPost ? toLocalizedBlogPost(sanityPost) : null;
+  const blog = mappedSanityBlog ?? staticBlog;
   if (!hasLocale(routing.locales, rawLocale) || !blog) notFound();
   const locale = rawLocale;
   const articleUrl = `${SITE_URL}/${locale}/blog/${blog.slug}`;
@@ -84,7 +89,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogArticlePage({ params }: Props) {
   const { locale: rawLocale, slug } = await params;
-  const blog = getLocalizedBlogBySlug(slug);
+  const sanityPost = await getSanityBlogPostBySlug(slug);
+  const staticBlog = getLocalizedBlogBySlug(slug);
+  const mappedSanityBlog = sanityPost ? toLocalizedBlogPost(sanityPost) : null;
+  const blog = mappedSanityBlog ?? staticBlog;
   if (!hasLocale(routing.locales, rawLocale) || !blog) notFound();
   const locale = rawLocale;
   setRequestLocale(locale);
@@ -136,6 +144,7 @@ export default async function BlogArticlePage({ params }: Props) {
     logo: BUSINESS.logoUrl,
   };
   const paragraphs = blog.content[locale].split('\n');
+  const portableContent = sanityPost?.content[locale] as PortableTextBlock[] | undefined;
 
   return (
     <main dir={english ? 'ltr' : 'rtl'} className="min-h-screen bg-void text-white">
@@ -185,22 +194,32 @@ export default async function BlogArticlePage({ params }: Props) {
         <h1 className="font-arabic text-3xl font-bold leading-tight lg:text-5xl">{title}</h1>
         <p className="mt-5 text-base leading-8 text-muted">{description}</p>
         <div className="mt-10 space-y-5 text-sm leading-8 text-white/80 lg:text-base">
-          {paragraphs.map((line, index) => {
-            if (!line.trim()) return null;
-            if (line.startsWith('## '))
-              return (
-                <h2 key={index} className="pt-5 font-arabic text-2xl font-bold text-gold">
-                  {line.slice(3)}
-                </h2>
-              );
-            if (line.startsWith('- '))
-              return (
-                <li key={index} className="ms-5 list-disc ps-2">
-                  {line.slice(2)}
-                </li>
-              );
-            return <p key={index}>{line}</p>;
-          })}
+          {portableContent ? (
+            <PortableText
+              value={portableContent}
+              components={{
+                block: {
+                  h2: ({children}) => <h2 className="pt-5 font-arabic text-2xl font-bold text-gold">{children}</h2>,
+                  normal: ({children}) => <p>{children}</p>,
+                },
+                list: {bullet: ({children}) => <ul className="space-y-2 ps-5">{children}</ul>},
+                listItem: {bullet: ({children}) => <li className="list-disc">{children}</li>},
+              }}
+            />
+          ) : (
+            paragraphs.map((line, index) => {
+              if (!line.trim()) return null;
+              if (line.startsWith('## '))
+                return (
+                  <h2 key={index} className="pt-5 font-arabic text-2xl font-bold text-gold">
+                    {line.slice(3)}
+                  </h2>
+                );
+              if (line.startsWith('- '))
+                return <li key={index} className="ms-5 list-disc ps-2">{line.slice(2)}</li>;
+              return <p key={index}>{line}</p>;
+            })
+          )}
         </div>
         <Link href="/blog" className="btn btn-secondary mt-10 inline-flex">
           {english ? 'Back to blog' : 'العودة إلى المدونة'}

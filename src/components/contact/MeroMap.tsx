@@ -1,17 +1,22 @@
 'use client';
 
 import { MapPin, Navigation, Phone } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale } from 'next-intl';
-import { branches } from '../../data/branches';
+import type {Branch} from '../../data/branches';
 import { trackEvent } from '@/lib/analytics';
 
 const mapboxStyle = 'mapbox://styles/mapbox/dark-v11';
-const mainBranchCoordinates: [number, number] = [46.7291548, 24.6488506];
+const defaultMainBranchCoordinates: [number, number] = [46.7291548, 24.6488506];
 
-export default function MeroMap() {
+export default function MeroMap({branches}: {branches: Branch[]}) {
   const locale = useLocale();
   const english = locale === 'en';
+  const mainBranch = branches[0];
+  const mainBranchCoordinates = useMemo<[number, number]>(
+    () => (mainBranch ? [mainBranch.longitude, mainBranch.latitude] : defaultMainBranchCoordinates),
+    [mainBranch],
+  );
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import('mapbox-gl').Map | null>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
@@ -162,9 +167,8 @@ export default function MeroMap() {
       map?.remove();
       mapRef.current = null;
     };
-  }, [english, locale, shouldLoad]);
+  }, [branches, english, locale, mainBranchCoordinates, shouldLoad]);
 
-  const mainBranch = branches[0];
   const directions = `https://www.google.com/maps/dir/?api=1&destination=${mainBranch.latitude},${mainBranch.longitude}`;
 
   return (

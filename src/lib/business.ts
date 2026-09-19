@@ -1,5 +1,5 @@
-import {branches} from '@/data/branches';
-import {SITE_URL} from '@/lib/site';
+import {branches} from '../data/branches';
+import {SITE_URL} from './site';
 
 const mainBranch = branches.find((branch) => branch.isMain) ?? branches[0];
 

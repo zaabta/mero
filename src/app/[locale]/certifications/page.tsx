@@ -5,6 +5,7 @@ import {setRequestLocale} from 'next-intl/server';
 import CertificationsPage from '../../../components/CertificationsPage';
 import {routing} from '@/i18n/routing';
 import {SITE_URL} from '@/lib/site';
+import {getSanityCertifications} from '@/sanity/lib/queries';
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -35,5 +36,6 @@ export default async function CertificationsRoute({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  return <CertificationsPage />;
+  const certifications = await getSanityCertifications();
+  return <CertificationsPage locale={locale} certifications={certifications} />;
 }

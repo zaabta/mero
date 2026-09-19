@@ -7,6 +7,7 @@ import {SITE_URL} from '@/lib/site';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import {cairo} from '../font';
+import {getFallbackSiteSettings, getSanitySiteSettings} from '@/sanity/lib/queries';
 
 type Props = {children: React.ReactNode; params: Promise<{locale: string}>};
 
@@ -51,11 +52,12 @@ export default async function LocaleLayout({children, params}: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const messages = await getMessages({locale});
+  const settings = (await getSanitySiteSettings()) ?? getFallbackSiteSettings();
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <Header />
+      <Header settings={settings} />
       {children}
-      <Footer />
+      <Footer settings={settings} />
     </NextIntlClientProvider>
   );
 }
